@@ -1,0 +1,4 @@
+Gerente,teste,G-3,123.345.567-89,q,1
+Gerente,João Silva,G-01,123.456.789-12,joao.silva@email.com,senha123
+CaixaPCD,Carlos Lima,P-01,133.453.453-87,carlos.lima@email.com,senha789
+Gerente,mateus dias,G-02,167.878.876-78,m@gmail.com,1234

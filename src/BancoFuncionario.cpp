@@ -6,9 +6,9 @@
 // construtor inicializa o banco de dados com alguns funcionários
 BancoFuncionario::BancoFuncionario() {
     try {
-        carregarFuncionariosDoArquivo("funcionarios.txt");
+        carregarFuncionariosDoArquivo("data/funcionarios.txt");
     } catch (const std::exception& e) {
-        std::cerr << "Erro ao carregar funcionários: " << e.what() << "\n";
+        std::cerr << "Erro ao carregar funcionarios: " << e.what() << "\n";
         std::cerr << "Iniciando com banco de dados vazio.\n";
     }
 }
@@ -20,7 +20,7 @@ void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFunciona
         std::cout << "\n1. Adicionar Funcionario\n"
                   << "2. Remover Funcionario\n"
                   << "0. Sair\n"
-                  << "Escolha uma opção: ";
+                  << "Escolha uma opcao: ";
         std::cin >> escolha;
 
         if (escolha == 1) {
@@ -50,7 +50,7 @@ void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFunciona
                 } else {
                     std::cerr << "Cargo inválido.\n";
                 }
-                salvarFuncionariosNoArquivo("funcionarios.txt");    // salva o lote no arquivo texto  
+                salvarFuncionariosNoArquivo("data/funcionarios.txt");    // salva o lote no arquivo texto  
 
             } catch (const std::exception& e) {
                 std::cerr << "Erro: " << e.what() << "\n";

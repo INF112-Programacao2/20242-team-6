@@ -1,0 +1,48 @@
+produto,L04,08/01/2026,15
+produto,1,23.89,qualquer produto
+produto,2,23.89,qualquer produto
+produto,3,23.89,qualquer produto
+produto,4,23.89,qualquer produto
+produto,5,23.89,qualquer produto
+produto,6,23.89,qualquer produto
+produto,7,23.89,qualquer produto
+produto,8,23.89,qualquer produto
+produto,9,23.89,qualquer produto
+produto,10,23.89,qualquer produto
+produto,11,23.89,qualquer produto
+produto,12,23.89,qualquer produto
+produto,13,23.89,qualquer produto
+produto,14,23.89,qualquer produto
+produto,15,23.89,qualquer produto
+Feijao Anchieta,L01,01/12/2025,10
+Feijao Anchieta,1,9.7,Feijao vermelho 1kg
+Feijao Anchieta,2,9.7,Feijao vermelho 1kg
+Feijao Anchieta,3,9.7,Feijao vermelho 1kg
+Feijao Anchieta,4,9.7,Feijao vermelho 1kg
+Feijao Anchieta,5,9.7,Feijao vermelho 1kg
+Feijao Anchieta,6,9.7,Feijao vermelho 1kg
+Feijao Anchieta,7,9.7,Feijao vermelho 1kg
+Feijao Anchieta,8,9.7,Feijao vermelho 1kg
+Feijao Anchieta,9,9.7,Feijao vermelho 1kg
+Feijao Anchieta,10,9.7,Feijao vermelho 1kg
+Pasta de Dente,L02,12/12/2026,10
+Pasta de Dente,1,4.79,pasta colgate 90g
+Pasta de Dente,2,4.79,pasta colgate 90g
+Pasta de Dente,3,4.79,pasta colgate 90g
+Pasta de Dente,4,4.79,pasta colgate 90g
+Pasta de Dente,5,4.79,pasta colgate 90g
+Pasta de Dente,6,4.79,pasta colgate 90g
+Pasta de Dente,7,4.79,pasta colgate 90g
+Pasta de Dente,8,4.79,pasta colgate 90g
+Pasta de Dente,9,4.79,pasta colgate 90g
+Pasta de Dente,10,4.79,pasta colgate 90g
+pose,L03,23/12/2025,5
+pose,1,3,descr
+pose,2,3,descr
+pose,3,3,descr
+pose,4,3,descr
+pose,5,3,descr
+qwr,L0,12/12/2026,3
+qwr,1,2,qwrt
+qwr,2,2,qwrt
+qwr,3,2,qwrt

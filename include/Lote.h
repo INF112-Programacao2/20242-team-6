@@ -10,18 +10,19 @@ class Lote{
 private:
     std::string nome;  // nome do produto
     std::string codigo;
-    size_t tamanho;
+    std::string dataValidadeStr;
+    int tamanho;
     std::vector<Produto> produtos;
     std::chrono::system_clock::time_point dataValidade; 
-    std::string dataValidadeStr;
+    
 public:
     // Construtor
-    Lote(std::string nome, std::string codigo, const std::string& dataStr, int tamanho);
+    Lote(std::string nome, std::string codigo, const std::string& dataValidadeStr, int tamanho);
     
     // Métodos getters
     std::string getNome() const;
     std::string getCodigo() const;
-    size_t getTamanho() const;
+    int getTamanho() const;
     std::string getValidade() const;
 
     // retorna um produto do lote pelo índice

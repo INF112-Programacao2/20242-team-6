@@ -7,7 +7,7 @@
 // construtor inicializa o banco de dados com alguns funcionários
 Estoque::Estoque() {
     try {
-        carregarEstoqueDoArquivo("estoque.txt");
+        carregarEstoqueDoArquivo("data/estoque.txt");
     } catch (const std::exception& e) {
         std::cerr << "Erro ao carregar estoque: " << e.what() << "\n";
         std::cerr << "Iniciando com banco de dados vazio.\n";
@@ -57,7 +57,7 @@ void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque){
                     throw std::runtime_error("Lote com produtos fora da validade.");
                 }
                 estoque.adicionarLote(gerente, std::move(lote));
-                salvarEstoqueNoArquivo("estoque.txt"); // salva o lote no arquivo texto
+                salvarEstoqueNoArquivo("data/estoque.txt"); // salva o lote no arquivo texto
 
             } catch (const std::exception& e) {
                 std::cerr << "Erro: " << e.what() << "\n";
