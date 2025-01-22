@@ -21,7 +21,7 @@ void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque){
         std::cout << "\n1. Adicionar novo lote de um produto\n"
                   << "2. Remover lote\n"
                   << "0. Sair\n"
-                  << "Escolha uma opção: ";
+                  << "Escolha uma opcao: ";
         std::cin >> escolha;
 
         if (escolha == 1) {
@@ -71,11 +71,22 @@ void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque){
 
             try {
                 estoque.removerLote(gerente, codigo);
+                salvarEstoqueNoArquivo("data/estoque.txt"); // salva o lote no arquivo texto
             } catch (const std::exception& e) {
                 std::cerr << "Erro: " << e.what() << "\n";
             }
         }
     } while (escolha != 0);    
+}
+
+// busca o produto(lote) por nome
+Lote* Estoque::buscarProdutoPorNome(const std::string& nome){
+    for(const auto&[codigo, lote] : estoque){
+        if(lote->getNome() == nome){
+            return lote.get();
+        }
+    }
+    return nullptr; // Não encontrado
 }
 
 // adiciona um lote ao estoque (gerente tem permissão)
@@ -120,8 +131,8 @@ void Estoque::salvarEstoqueNoArquivo(const std::string& nomeArquivo) const{
                 << lote-> getCodigo()<< ","
                 << lote->getValidade() << ","
                 << lote->getTamanho() << "\n";
-        for(int i=0; i<lote->getTamanho(); i++){
-            Produto produto = lote->pesquisarProduto(i);
+        for(size_t i=0; i<lote->getTamanho(); i++){
+            Produto produto = lote->pesquisarProduto(static_cast<int>(i));
             arquivo << produto.getNome() << ","
                 << produto.getId() << ","
                 << produto.getPreco() << ","

@@ -19,6 +19,9 @@ public:
 
     // gerencia o estoque (gerente tem permissão)
     void gerenciarEstoque(Funcionario* gerente, Estoque& estoque);
+
+    // busca o produto(lote) por nome
+    Lote* buscarProdutoPorNome(const std::string& nome);
     
     // adiciona um lote ao estoque (gerente tem permissão)
     void adicionarLote(Funcionario* gerente, std::unique_ptr<Lote> lote);

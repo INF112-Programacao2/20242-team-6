@@ -10,7 +10,7 @@ class Menu {
 public:
     static void exibirMenuGerente(Funcionario* gerente, BancoFuncionario& banco, Estoque& estoque);
 
-    static void exibirMenuCaixa(Funcionario* caixa);
+    static void exibirMenuCaixa(Funcionario* caixa, Estoque& estoque);
 };
 
 #endif

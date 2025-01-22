@@ -13,34 +13,48 @@ Lote::Lote(std::string nome, std::string codigo, const std::string& dataValidade
         throw std::invalid_argument("Formato de data invalido. Use o formato 'dd/mm/aaaa'.");
     }
     this->dataValidade = std::chrono::system_clock::from_time_t(std::mktime(&tm));
+
+    // inicializa o vetor de produtos com tamanho
+    produtos.reserve(static_cast<size_t>(tamanho));
 }
 
 // Métodos getters
 std::string Lote::getNome() const { return nome; }
 std::string Lote::getCodigo() const{ return codigo; }
-int Lote::getTamanho() const{ return tamanho; }
+size_t Lote::getTamanho() const{ return produtos.size(); }
 std::string Lote::getValidade() const{ return dataValidadeStr; }
+
+// retorna o valor unitario de um produto do lote
+double Lote::getProdutosPreco() const{
+    return produtos[0].getPreco();
+}
 
 // retorna um produto do lote pelo índice
 const Produto& Lote::pesquisarProduto(int indice) const{
+    if(static_cast<size_t>(indice) >= produtos.size()){
+        throw std::out_of_range("Indice fora do limite do vetor de produtos.");
+    }
     return produtos.at(indice);
 }
 
 // Método para adicionar um produto ao lote
 void Lote::adicionarProduto(const Produto& produto) {
-    if (produtos.size() < static_cast<size_t>(getTamanho())) {
-        produtos.push_back(produto); // adiciona ao lote
-    } else {
-        throw std::overflow_error("Lote ja esta cheio.");
-    }
+    produtos.push_back(produto); // adiciona ao lote    
 }
 
 // Método para remover uma quantidade de produtos do lote
 void Lote::removerProdutos(int quantidade){
+    if (quantidade < 0) {
+        throw std::invalid_argument("A quantidade de produtos a ser removida nao pode ser negativa.");
+    }
+    if(quantidade == 0){
+        return;     // retorna sem fazer nada
+    }
     if(static_cast<size_t>(quantidade) <= produtos.size()){
         produtos.erase(produtos.begin(), produtos.begin() + quantidade); // deleta a quantidade de produtos a partir do primeiro elemento
+        std::cout << "Removendo " << quantidade << " produtos do lote. Produtos disponiveis: " << produtos.size() << std::endl;
     } else {
-        throw std::invalid_argument("Nao e possível remover esta quantidade de produtos do lote.");
+        throw std::invalid_argument("Nao e possivel remover esta quantidade de produtos do lote.");
     }
 }
 

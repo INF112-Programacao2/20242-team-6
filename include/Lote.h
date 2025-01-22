@@ -22,8 +22,11 @@ public:
     // Métodos getters
     std::string getNome() const;
     std::string getCodigo() const;
-    int getTamanho() const;
+    size_t getTamanho() const;
     std::string getValidade() const;
+    
+    // retorna o valor unitario de um produto do lote
+    double getProdutosPreco() const;
 
     // retorna um produto do lote pelo índice
     const Produto& pesquisarProduto(int indice) const;

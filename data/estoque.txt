@@ -1,48 +1,30 @@
-produto,L04,08/01/2026,15
-produto,1,23.89,qualquer produto
-produto,2,23.89,qualquer produto
-produto,3,23.89,qualquer produto
-produto,4,23.89,qualquer produto
-produto,5,23.89,qualquer produto
-produto,6,23.89,qualquer produto
-produto,7,23.89,qualquer produto
-produto,8,23.89,qualquer produto
-produto,9,23.89,qualquer produto
-produto,10,23.89,qualquer produto
-produto,11,23.89,qualquer produto
-produto,12,23.89,qualquer produto
-produto,13,23.89,qualquer produto
-produto,14,23.89,qualquer produto
-produto,15,23.89,qualquer produto
-Feijao Anchieta,L01,01/12/2025,10
-Feijao Anchieta,1,9.7,Feijao vermelho 1kg
-Feijao Anchieta,2,9.7,Feijao vermelho 1kg
-Feijao Anchieta,3,9.7,Feijao vermelho 1kg
-Feijao Anchieta,4,9.7,Feijao vermelho 1kg
-Feijao Anchieta,5,9.7,Feijao vermelho 1kg
-Feijao Anchieta,6,9.7,Feijao vermelho 1kg
-Feijao Anchieta,7,9.7,Feijao vermelho 1kg
-Feijao Anchieta,8,9.7,Feijao vermelho 1kg
-Feijao Anchieta,9,9.7,Feijao vermelho 1kg
-Feijao Anchieta,10,9.7,Feijao vermelho 1kg
-Pasta de Dente,L02,12/12/2026,10
-Pasta de Dente,1,4.79,pasta colgate 90g
-Pasta de Dente,2,4.79,pasta colgate 90g
-Pasta de Dente,3,4.79,pasta colgate 90g
-Pasta de Dente,4,4.79,pasta colgate 90g
-Pasta de Dente,5,4.79,pasta colgate 90g
-Pasta de Dente,6,4.79,pasta colgate 90g
-Pasta de Dente,7,4.79,pasta colgate 90g
-Pasta de Dente,8,4.79,pasta colgate 90g
-Pasta de Dente,9,4.79,pasta colgate 90g
-Pasta de Dente,10,4.79,pasta colgate 90g
-pose,L03,23/12/2025,5
-pose,1,3,descr
-pose,2,3,descr
-pose,3,3,descr
-pose,4,3,descr
-pose,5,3,descr
-qwr,L0,12/12/2026,3
-qwr,1,2,qwrt
-qwr,2,2,qwrt
-qwr,3,2,qwrt
+cerveja corona 443ml,L06,12/12/2036,11
+cerveja corona 443ml,5,6.1,cerveja corona 443ml
+cerveja corona 443ml,6,6.1,cerveja corona 443ml
+cerveja corona 443ml,7,6.1,cerveja corona 443ml
+cerveja corona 443ml,8,6.1,cerveja corona 443ml
+cerveja corona 443ml,9,6.1,cerveja corona 443ml
+cerveja corona 443ml,10,6.1,cerveja corona 443ml
+cerveja corona 443ml,11,6.1,cerveja corona 443ml
+cerveja corona 443ml,12,6.1,cerveja corona 443ml
+cerveja corona 443ml,13,6.1,cerveja corona 443ml
+cerveja corona 443ml,14,6.1,cerveja corona 443ml
+cerveja corona 443ml,15,6.1,cerveja corona 443ml
+Pasta de Amendoim,L05,01/01/2036,11
+Pasta de Amendoim,5,3.5,amendoim 100g
+Pasta de Amendoim,6,3.5,amendoim 100g
+Pasta de Amendoim,7,3.5,amendoim 100g
+Pasta de Amendoim,8,3.5,amendoim 100g
+Pasta de Amendoim,9,3.5,amendoim 100g
+Pasta de Amendoim,10,3.5,amendoim 100g
+Pasta de Amendoim,11,3.5,amendoim 100g
+Pasta de Amendoim,12,3.5,amendoim 100g
+Pasta de Amendoim,13,3.5,amendoim 100g
+Pasta de Amendoim,14,3.5,amendoim 100g
+Pasta de Amendoim,15,3.5,amendoim 100g
+res,L03,03/04/2027,0
+teste,L01,12/12/2025,0
+qwe,L02,12/12/2025,3
+qwe,11,12,ewfd
+qwe,12,12,ewfd
+qwe,13,12,ewfd

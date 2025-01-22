@@ -1,13 +1,9 @@
 #include "Caixa.h"
+#include <iostream>
 
 // construtor
 Caixa::Caixa(const std::string& nome, const std::string& id, const std::string& cpf,
 const std::string& email, const std::string& senha) : Funcionario(nome, id, cpf, email, senha) {}
-
-// método para iniciar o carrinho 
-void Caixa::abrirCarrinho(){
-    // implementar ...
-}
 
 // método para finalizar a compra do cliente
 void Caixa::finalizarCompra(){

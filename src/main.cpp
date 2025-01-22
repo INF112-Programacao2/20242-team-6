@@ -29,7 +29,7 @@ int main() {
         if (funcionario->getCargo() == "Gerente") {
             Menu::exibirMenuGerente(funcionario, banco, estoque);
         } else if (funcionario->getCargo() == "Caixa" || funcionario->getCargo() == "CaixaPCD") {
-            Menu::exibirMenuCaixa(funcionario);
+            Menu::exibirMenuCaixa(funcionario, estoque);
         } else {
             std::cout << "Tipo de funcionario nao reconhecido.\n";
         }

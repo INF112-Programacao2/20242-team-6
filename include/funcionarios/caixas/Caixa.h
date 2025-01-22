@@ -9,9 +9,6 @@ public:
     Caixa(const std::string& nome, const std::string& id, const std::string& cpf,
     const std::string& email, const std::string& senha);
 
-    // método para iniciar o carrinho 
-    void abrirCarrinho();
-
     // método para finalizar a compra do cliente
     virtual void finalizarCompra();
 
