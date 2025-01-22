@@ -1,30 +1,51 @@
-cerveja corona 443ml,L06,12/12/2036,11
-cerveja corona 443ml,5,6.1,cerveja corona 443ml
-cerveja corona 443ml,6,6.1,cerveja corona 443ml
-cerveja corona 443ml,7,6.1,cerveja corona 443ml
-cerveja corona 443ml,8,6.1,cerveja corona 443ml
-cerveja corona 443ml,9,6.1,cerveja corona 443ml
-cerveja corona 443ml,10,6.1,cerveja corona 443ml
-cerveja corona 443ml,11,6.1,cerveja corona 443ml
-cerveja corona 443ml,12,6.1,cerveja corona 443ml
-cerveja corona 443ml,13,6.1,cerveja corona 443ml
-cerveja corona 443ml,14,6.1,cerveja corona 443ml
-cerveja corona 443ml,15,6.1,cerveja corona 443ml
-Pasta de Amendoim,L05,01/01/2036,11
-Pasta de Amendoim,5,3.5,amendoim 100g
-Pasta de Amendoim,6,3.5,amendoim 100g
-Pasta de Amendoim,7,3.5,amendoim 100g
-Pasta de Amendoim,8,3.5,amendoim 100g
-Pasta de Amendoim,9,3.5,amendoim 100g
-Pasta de Amendoim,10,3.5,amendoim 100g
-Pasta de Amendoim,11,3.5,amendoim 100g
-Pasta de Amendoim,12,3.5,amendoim 100g
-Pasta de Amendoim,13,3.5,amendoim 100g
-Pasta de Amendoim,14,3.5,amendoim 100g
-Pasta de Amendoim,15,3.5,amendoim 100g
-res,L03,03/04/2027,0
+lazanha seara 500g,L13,04/07/2025,17
+lazanha seara 500g,4,13.75,lazanha de microondas
+lazanha seara 500g,5,13.75,lazanha de microondas
+lazanha seara 500g,6,13.75,lazanha de microondas
+lazanha seara 500g,7,13.75,lazanha de microondas
+lazanha seara 500g,8,13.75,lazanha de microondas
+lazanha seara 500g,9,13.75,lazanha de microondas
+lazanha seara 500g,10,13.75,lazanha de microondas
+lazanha seara 500g,11,13.75,lazanha de microondas
+lazanha seara 500g,12,13.75,lazanha de microondas
+lazanha seara 500g,13,13.75,lazanha de microondas
+lazanha seara 500g,14,13.75,lazanha de microondas
+lazanha seara 500g,15,13.75,lazanha de microondas
+lazanha seara 500g,16,13.75,lazanha de microondas
+lazanha seara 500g,17,13.75,lazanha de microondas
+lazanha seara 500g,18,13.75,lazanha de microondas
+lazanha seara 500g,19,13.75,lazanha de microondas
+lazanha seara 500g,20,13.75,lazanha de microondas
+coxinha de frango 1kg,L12,03/05/2025,4
+coxinha de frango 1kg,7,22.9,pacote de coxinha de frango
+coxinha de frango 1kg,8,22.9,pacote de coxinha de frango
+coxinha de frango 1kg,9,22.9,pacote de coxinha de frango
+coxinha de frango 1kg,10,22.9,pacote de coxinha de frango
+qwe,L02,12/12/2025,0
 teste,L01,12/12/2025,0
-qwe,L02,12/12/2025,3
-qwe,11,12,ewfd
-qwe,12,12,ewfd
-qwe,13,12,ewfd
+res,L03,03/04/2027,0
+Pasta de Amendoim,L05,01/01/2036,0
+cerveja corona 443ml,L06,12/12/2036,0
+arroz flor,L11,01/12/2026,11
+arroz flor,5,24.9,pacote de arroz 5kg
+arroz flor,6,24.9,pacote de arroz 5kg
+arroz flor,7,24.9,pacote de arroz 5kg
+arroz flor,8,24.9,pacote de arroz 5kg
+arroz flor,9,24.9,pacote de arroz 5kg
+arroz flor,10,24.9,pacote de arroz 5kg
+arroz flor,11,24.9,pacote de arroz 5kg
+arroz flor,12,24.9,pacote de arroz 5kg
+arroz flor,13,24.9,pacote de arroz 5kg
+arroz flor,14,24.9,pacote de arroz 5kg
+arroz flor,15,24.9,pacote de arroz 5kg
+feijao vermelho,L08,10/01/2026,10
+feijao vermelho,3,9,feijao vermelho
+feijao vermelho,4,9,feijao vermelho
+feijao vermelho,5,9,feijao vermelho
+feijao vermelho,6,9,feijao vermelho
+feijao vermelho,7,9,feijao vermelho
+feijao vermelho,8,9,feijao vermelho
+feijao vermelho,9,9,feijao vermelho
+feijao vermelho,10,9,feijao vermelho
+feijao vermelho,11,9,feijao vermelho
+feijao vermelho,12,9,feijao vermelho
