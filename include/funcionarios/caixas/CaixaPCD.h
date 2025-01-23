@@ -9,11 +9,8 @@ public:
     CaixaPcd(const std::string& nome, const std::string& id, const std::string& cpf,
     const std::string& email, const std::string& senha);
 
-    // método para finalizar a compra do cliente
-    virtual void finalizarCompra() override;
-
     // método para gerar relatório de vendas do caixa
-    virtual void gerarRelatorio() override;
+    virtual void gerarRelatorio() const override;
 
     // Método que retorna o cargo
     virtual std::string getCargo() const override;

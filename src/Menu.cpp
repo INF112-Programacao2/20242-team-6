@@ -51,7 +51,7 @@ void Menu::exibirMenuCaixa(Funcionario* caixa, Estoque& estoque) {
                 break;
             case 2:
                 std::cout << "Gerando relatorio de vendas mensal...\n";
-                // Implemente a geração de relatórios
+                caixa->gerarRelatorio();
                 break;
             case 0:
                 std::cout << "Saindo...\n";

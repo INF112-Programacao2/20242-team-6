@@ -10,7 +10,7 @@ public:
     const std::string& email, const std::string& senha);
 
     // gerar relatorio dos funcionarios
-    virtual void gerarRelatorio() override;
+    virtual void gerarRelatorio() const override;
 
     // Método que retorna o cargo
     virtual std::string getCargo() const override;

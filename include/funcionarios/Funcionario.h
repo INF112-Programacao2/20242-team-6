@@ -12,7 +12,7 @@ protected:
     std::string cpf;
     std::string email;
     std::string senha;
-    bool isLogado;  // verifica se o funcionario esta logado
+
 public:
     // Construtor
     Funcionario(const std::string& nome, const std::string& id, const std::string& cpf,
@@ -29,7 +29,7 @@ public:
     std::string getNome() const;
 
     // Método virtual puro para gerar relatorio
-    virtual void gerarRelatorio() = 0;
+    virtual void gerarRelatorio() const = 0;
 
     // Método virtual puro para retornar o cargo
     virtual std::string getCargo() const = 0;
