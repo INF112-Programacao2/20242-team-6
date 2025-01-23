@@ -1,4 +1,5 @@
 #include "Venda.h"
+#include "NotaFiscal.h"
 #include <iostream>
 #include <vector>
 #include <stdexcept>
@@ -37,4 +38,10 @@ void Venda::iniciarVenda(Funcionario* caixa, Estoque& estoque){
 
 void Venda::finalizarVenda(Cliente& cliente, Funcionario* caixa, Estoque& estoque, Carrinho& carrinho){
     // implementar lógica para gerar nota fiscal e salvar as vendas do funcionario
+    
+    // cria uma nota fiscal
+    NotaFiscal nota(caixa, cliente, carrinho);
+
+    // imprime um arquivo com a nota fiscal
+    nota.gerarNotaFiscal();
 }
