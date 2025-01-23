@@ -13,13 +13,20 @@ struct DetalheVenda {
 };
 
 class Caixa : public Funcionario{
-private:
+protected:
     std::vector<DetalheVenda> vendas; // Histórico de vendas
+    double total_vendido; // guarda o valor total vendido pelo caixa
 
 public:
     // construtor
     Caixa(const std::string& nome, const std::string& id, const std::string& cpf,
-    const std::string& email, const std::string& senha);
+    const std::string& email, const std::string& senha, const double& total_vendido);
+
+    // getters
+    double getTotalVendido() const;
+
+    // setters
+    void setTotalVendido(double total_vendido);
 
     // Registra uma venda no histórico
     void registrarVenda(const std::string& cliente, const std::map<std::string, std::pair<int, double>>& resumoCarrinho, 

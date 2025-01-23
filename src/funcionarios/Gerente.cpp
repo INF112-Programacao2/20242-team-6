@@ -14,6 +14,6 @@ void Gerente::gerarRelatorio() const{
 
 // retorna o cargo
 std::string Gerente::getCargo() const {
-    return "Gerente";
+    return "gerente";
 }
 

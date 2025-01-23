@@ -1,1 +1,27 @@
-
+massa de tomate,L01,01/02/2026,11
+massa de tomate,5,5.8,lata de massa de tomate
+massa de tomate,6,5.8,lata de massa de tomate
+massa de tomate,7,5.8,lata de massa de tomate
+massa de tomate,8,5.8,lata de massa de tomate
+massa de tomate,9,5.8,lata de massa de tomate
+massa de tomate,10,5.8,lata de massa de tomate
+massa de tomate,11,5.8,lata de massa de tomate
+massa de tomate,12,5.8,lata de massa de tomate
+massa de tomate,13,5.8,lata de massa de tomate
+massa de tomate,14,5.8,lata de massa de tomate
+massa de tomate,15,5.8,lata de massa de tomate
+pao integral,L02,04/04/2025,9
+pao integral,12,5.2,pao integral
+pao integral,13,5.2,pao integral
+pao integral,14,5.2,pao integral
+pao integral,15,5.2,pao integral
+pao integral,16,5.2,pao integral
+pao integral,17,5.2,pao integral
+pao integral,18,5.2,pao integral
+pao integral,19,5.2,pao integral
+pao integral,20,5.2,pao integral
+leite,L03,01/03/2025,4
+leite,12,5.6,caixa de leite 1L
+leite,13,5.6,caixa de leite 1L
+leite,14,5.6,caixa de leite 1L
+leite,15,5.6,caixa de leite 1L

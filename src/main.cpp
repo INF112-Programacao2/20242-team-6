@@ -26,9 +26,9 @@ int main() {
 
         Funcionario* funcionario = banco.realizarLogin(email, senha);
 
-        if (funcionario->getCargo() == "Gerente") {
+        if (funcionario->getCargo() == "gerente") {
             Menu::exibirMenuGerente(funcionario, banco, estoque);
-        } else if (funcionario->getCargo() == "Caixa" || funcionario->getCargo() == "CaixaPCD") {
+        } else if (funcionario->getCargo() == "caixa" || funcionario->getCargo() == "caixapcd") {
             Menu::exibirMenuCaixa(funcionario, estoque);
         } else {
             std::cout << "Tipo de funcionario nao reconhecido.\n";

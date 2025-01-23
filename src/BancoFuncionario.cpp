@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <iomanip>
 
 // construtor inicializa o banco de dados com alguns funcionários
 BancoFuncionario::BancoFuncionario() {
@@ -19,6 +20,8 @@ void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFunciona
     do {
         std::cout << "\n1. Adicionar Funcionario\n"
                   << "2. Remover Funcionario\n"
+                  << "3. Exibir informacao de um funcionario\n"
+                  << "4. Top caixas com mais vendas\n"
                   << "0. Sair\n"
                   << "Escolha uma opcao: ";
         std::cin >> escolha;
@@ -26,29 +29,62 @@ void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFunciona
         if (escolha == 1) {
             // Adicionar novo funcionário
             std::string nome, id, cpf, email, senha, cargo;
-            std::cout << "Nome: ";
-            std::cin.ignore(); // Limpa buffer
-            std::getline(std::cin, nome);
-            std::cout << "ID: ";
-            std::cin >> id;
-            std::cout << "CPF: ";
-            std::cin >> cpf;
-            std::cout << "Email: ";
-            std::cin >> email;
-            std::cout << "Senha: ";
-            std::cin >> senha;
+
             std::cout << "Cargo (Gerente, Caixa, CaixaPCD): ";
             std::cin >> cargo;
 
+            /*validar cargo:
+            1) transforma a entrada em letras minuscalas e
+            2) testa se é ou gerente ou caixa ou caixapcd */
+
+            std::cout << "Nome: ";
+            std::cin.ignore(); // Limpa buffer
+            std::getline(std::cin, nome);
+
+            /*limite o nome para no maximo 50 caracteres*/
+
+            std::cout << "ID: ";
+            std::cin >> id;
+
+            /*criar lógica aqui para validar id:
+            Inicia com uma letra maiscula que indica o cargo:
+            G - gerente
+            C - caixa
+            P - caixa pcd
+            validar se o cargo esta correto
+            e segue com - e um numero
+            exemplo: G-01
+            obs: a função adicionarFuncionario() já valida se o id for repetido
+            */
+
+            std::cout << "CPF: ";
+            std::cin >> cpf;
+
+            /*criar lógica aqui para validar cpf:
+            1) pega só os 11 primeiros números (123.567.890-90) -> (12356789090)
+            2) tranforma no formato cpf (XXX.XXX.XXX-XX)
+            0bs: garantir que tenha exatos 11 numeros */
+
+            std::cout << "Email: ";
+            std::cin >> email;
+
+            /*criar lógica aqui para validar email:
+            deve ter o formato XXX@YYY.ZZZ */
+
+            std::cout << "Senha: ";
+            std::cin >> senha;
+
+            
+
             try {
-                if (cargo == "Gerente") {
+                if (cargo == "gerente") {
                     banco.adicionarFuncionario(gerente, std::make_unique<Gerente>(nome, id, cpf, email, senha));
-                } else if (cargo == "Caixa") {
-                    banco.adicionarFuncionario(gerente, std::make_unique<Caixa>(nome, id, cpf, email, senha));
-                } else if (cargo == "CaixaPCD") {
-                    banco.adicionarFuncionario(gerente, std::make_unique<CaixaPcd>(nome, id, cpf, email, senha));
+                } else if (cargo == "caixa") {
+                    banco.adicionarFuncionario(gerente, std::make_unique<Caixa>(nome, id, cpf, email, senha, 0.0));
+                } else if (cargo == "caixapcd") {
+                    banco.adicionarFuncionario(gerente, std::make_unique<CaixaPcd>(nome, id, cpf, email, senha, 0.0));
                 } else {
-                    std::cerr << "Cargo inválido.\n";
+                    std::cerr << "Cargo invalido.\n";
                 }
                 salvarFuncionariosNoArquivo("data/funcionarios.txt");    // salva o lote no arquivo texto  
 
@@ -67,13 +103,22 @@ void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFunciona
             } catch (const std::exception& e) {
                 std::cerr << "Erro: " << e.what() << "\n";
             }
+        } else if(escolha == 3){
+            // mostrar detalhes de um funcionario
+            // pedir nome e buscar no banco de dados
+            // implementar uma função membro buscarFuncionarioPorNome() (parecido com buscarFuncionarioPorEmail())
+            // e exibir os detalhes dos funcionarios
+        }  else if(escolha == 4){
+            // implementar um ranking de caixas com mais vendas em dinheiro.
         }
+
+
     } while (escolha != 0);
 }
 
 // Adiciona um funcionário ao banco de dados
 void BancoFuncionario::adicionarFuncionario(Funcionario* gerente, std::unique_ptr<Funcionario> novoFuncionario) {
-    if (gerente->getCargo() != "Gerente") {
+    if (gerente->getCargo() != "gerente") {
         throw std::runtime_error("Apenas gerentes podem adicionar novos funcionarios.");
     }
 
@@ -88,7 +133,7 @@ void BancoFuncionario::adicionarFuncionario(Funcionario* gerente, std::unique_pt
 
 // Remove um funcionário do banco de dados
 void BancoFuncionario::removerFuncionario(Funcionario* gerente, const std::string& id) {
-    if (gerente->getCargo() != "Gerente") {
+    if (gerente->getCargo() != "gerente") {
         throw std::runtime_error("Apenas gerentes podem remover funcionários.");
     }
 
@@ -133,7 +178,17 @@ void BancoFuncionario::salvarFuncionariosNoArquivo(const std::string& nomeArquiv
                 << funcionario->getId() << ","
                 << funcionario->getCpf() << ","
                 << funcionario->getEmail() << ","
-                << funcionario->getSenha() << "\n";
+                << funcionario->getSenha();
+
+                // Verifica se é do tipo Caixa ou CaixaPCD
+                if (funcionario->getCargo() == "caixa" || funcionario->getCargo() == "caixapcd") {
+                    const Caixa* caixa = dynamic_cast<const Caixa*>(funcionario.get());
+                    if (caixa) {
+                        arquivo << "," << std::fixed << std::setprecision(2) << caixa->getTotalVendido();
+                    }
+                }
+
+        arquivo << "\n"; // Nova linha para o próximo funcionário                
     }
 
     arquivo.close();
@@ -151,8 +206,10 @@ void BancoFuncionario::carregarFuncionariosDoArquivo(const std::string& nomeArqu
     std::string linha;
     while (std::getline(arquivo, linha)) {
         std::istringstream stream(linha);
-        std::string cargo, nome, id, cpf, email, senha;
-        
+        std::string cargo, nome, id, cpf, email, senha, valor_total_str;
+                double valor_total = 0.0; // inicializa o valor total
+
+        // Lê os campos obrigatórios
         std::getline(stream, cargo, ',');
         std::getline(stream, nome, ',');
         std::getline(stream, id, ',');
@@ -160,16 +217,31 @@ void BancoFuncionario::carregarFuncionariosDoArquivo(const std::string& nomeArqu
         std::getline(stream, email, ',');
         std::getline(stream, senha, ',');
 
-        if (cargo == "Gerente") {
+        // Se for "Caixa" ou "CaixaPCD", tenta ler o valor total vendido
+        if (cargo == "caixa" || cargo == "caixapcd") {
+            if (!std::getline(stream, valor_total_str, ',')) {
+                throw std::runtime_error("Campo valor_total ausente para um cargo de Caixa.");
+            }
+            try {
+                valor_total = std::stod(valor_total_str);
+            } catch (const std::invalid_argument&) {
+                throw std::runtime_error("Valor total vendido invalido no arquivo.");
+            } catch (const std::out_of_range&) {
+                throw std::runtime_error("Valor total vendido fora do intervalo valido.");
+            }
+        }
+
+        if (cargo == "gerente") {
             funcionarios[id] = std::make_unique<Gerente>(nome, id, cpf, email, senha);
-        } else if (cargo == "Caixa") {
-            funcionarios[id] = std::make_unique<Caixa>(nome, id, cpf, email, senha);
-        } else if (cargo == "CaixaPCD") {
-            funcionarios[id] = std::make_unique<CaixaPcd>(nome, id, cpf, email, senha);
+        } else if (cargo == "caixa") {
+            funcionarios[id] = std::make_unique<Caixa>(nome, id, cpf, email, senha, valor_total);
+        } else if (cargo == "caixapcd") {
+            funcionarios[id] = std::make_unique<CaixaPcd>(nome, id, cpf, email, senha, valor_total);
         } else {
             throw std::runtime_error("Cargo desconhecido no arquivo.");
         }
     }
 
+    // fecha arquivo
     arquivo.close();
 }

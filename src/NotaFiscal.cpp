@@ -19,7 +19,7 @@ void NotaFiscal::gerarNotaFiscal(){
 
     std::ofstream arquivo(nomeArquivo, std::ios::out); // abre somente para escrita
     if (!arquivo) {
-        throw std::runtime_error("Erro ao abrir o arquivo para carregar funcionarios.");
+        throw std::runtime_error("Erro ao abrir o arquivo para carregar nota fiscal.");
     }
 
     // Imprime o carrinho atualizado com agrupamento por nome de produto

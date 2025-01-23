@@ -6,6 +6,9 @@
 #include <stdexcept>
 #include <iomanip>
 #include <map>
+#include <chrono>
+
+using namespace std::chrono;
 
 // método para iniciar o carrinho 
 void Venda::iniciarVenda(Funcionario* caixa, Estoque& estoque){
@@ -21,6 +24,12 @@ void Venda::iniciarVenda(Funcionario* caixa, Estoque& estoque){
     // pedir cpf do cliente
     std::cout << "CPF do cliente: ";
     std::cin >> cpf_cliente;
+
+    /*criar lógica aqui para validar cpf:
+    1) pega só os 11 primeiros números (123.567.890-90) -> (12356789090)
+    2) tranforma no formato cpf (XXX.XXX.XXX-XX)
+    0bs: garantir que tenha exatos 11 numeros */
+    
     std::cin.ignore(); // Limpa buffer após receber cpf
 
     // cria cliente
@@ -44,20 +53,29 @@ void Venda::finalizarVenda(Cliente& cliente, Funcionario* caixa, Estoque& estoqu
         // Cria uma nota fiscal
         NotaFiscal nota(caixa, cliente, carrinho);
 
+        // cria lógica para pegar hora atual e usar como string
+        system_clock::time_point dataHora = system_clock::now();
+        std::time_t tt = system_clock::to_time_t(dataHora);
+
+        std::stringstream ss;
+        ss << std::put_time(std::localtime(&tt), "%H:%M %d/%m/%Y");
+        std::string dataHoraStr = ss.str();
+
         // Imprime um arquivo com a nota fiscal
         nota.gerarNotaFiscal();
 
-        // criar lógica para pegar hora atual (teste)
-        std::string dataHora = "2025-01-22 14:35";
+        // guarda o total vendido pelo caixa
+        double total = carrinho.getValorTotal() + novo_caixa->getTotalVendido();
+        novo_caixa->setTotalVendido(total);
 
         // Registra a venda no caixa
-        novo_caixa->registrarVenda(cliente.getNome(), carrinho.getResumoCarrinho(), carrinho.getValorTotal(), dataHora);
+        novo_caixa->registrarVenda(cliente.getNome(), carrinho.getResumoCarrinho(), carrinho.getValorTotal(), dataHoraStr);
 
         // Exibe mensagem de finalização
         std::cout << "Venda finalizada com sucesso!\n";
         std::cout << "Cliente: " << cliente.getNome() << "\n";
-        std::cout << "Total da compra: " << std::fixed << std::setprecision(2) << carrinho.getValorTotal() << "\n";
+        std::cout << "Total da compra: R$" << std::fixed << std::setprecision(2) << carrinho.getValorTotal() << "\n";
     } else {
-        std::cerr << "Funcionário fornecido nao e um Caixa.\n";
+        std::cerr << "Funcionario fornecido nao e um Caixa.\n";
     }
 }

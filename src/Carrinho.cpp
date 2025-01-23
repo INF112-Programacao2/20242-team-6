@@ -104,7 +104,7 @@ void Carrinho::realizarCompra(){
             }
 
             std::cout << "--------------------------------------------------------------------------\n";
-            std::cout << "Subtotal acumulado: " << std::fixed << std::setprecision(2) << subtotal << std::endl;
+            std::cout << "Subtotal acumulado: R$" << std::fixed << std::setprecision(2) << subtotal << std::endl;
             std::cout << "--------------------------------------------------------------------------\n";
 
 

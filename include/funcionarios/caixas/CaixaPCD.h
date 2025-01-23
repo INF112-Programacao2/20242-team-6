@@ -7,7 +7,7 @@ class CaixaPcd : public Caixa{
 public:
     // construtor
     CaixaPcd(const std::string& nome, const std::string& id, const std::string& cpf,
-    const std::string& email, const std::string& senha);
+    const std::string& email, const std::string& senha, const double& total_vendido);
 
     // método para gerar relatório de vendas do caixa
     virtual void gerarRelatorio() const override;

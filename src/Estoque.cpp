@@ -91,7 +91,7 @@ Lote* Estoque::buscarProdutoPorNome(const std::string& nome){
 
 // adiciona um lote ao estoque (gerente tem permissão)
 void Estoque::adicionarLote(Funcionario* gerente, std::unique_ptr<Lote> lote){
-    if (gerente->getCargo() != "Gerente") {
+    if (gerente->getCargo() != "gerente") {
         throw std::runtime_error("Apenas gerentes podem adicionar novos funcionarios.");
     }
 
@@ -106,7 +106,7 @@ void Estoque::adicionarLote(Funcionario* gerente, std::unique_ptr<Lote> lote){
 
 // remove um lote do estoque
 void Estoque::removerLote(Funcionario* gerente, const std::string& codigo){
-    if (gerente->getCargo() != "Gerente") {
+    if (gerente->getCargo() != "gerente") {
         throw std::runtime_error("Apenas gerentes podem remover funcionarios.");
     }
 
