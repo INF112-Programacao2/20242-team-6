@@ -1,3 +1,4 @@
+#include "CaixaPCD.h"
 #include "Menu.h"
 #include "Venda.h"
 #include <iostream>
@@ -36,11 +37,22 @@ void Menu::exibirMenuCaixa(Funcionario* caixa, Estoque& estoque) {
     int escolha;
 
     do {
+
+        // abre o menu inicial para o caixa
         std::cout << "\nMenu do Caixa:\n"
                   << "1. Iniciar Venda\n"
-                  << "2. Gerar Relatorio de Vendas Mensal\n"
+                  << "2. Exibir Relatorio de Vendas\n"
                   << "0. Sair\n"
                   << "Escolha uma opcao: ";
+
+        // abre as opções de acessibilidade para PCD
+        if(caixa->getCargo() == "caixapcd"){
+            CaixaPcd* caixa_pcd = dynamic_cast<CaixaPcd*>(caixa);
+
+            std::string nomeArquivo = "features/accessibility/menu_pcd.txt";
+            caixa_pcd->falarTexto(nomeArquivo); // chama TTS
+        }
+
         std::cin >> escolha;
 
         switch (escolha) {
@@ -50,13 +62,20 @@ void Menu::exibirMenuCaixa(Funcionario* caixa, Estoque& estoque) {
                 novaVenda.iniciarVenda(caixa, estoque);
                 break;
             case 2:
-                std::cout << "Gerando relatorio de vendas mensal...\n";
-                caixa->gerarRelatorio();
+                std::cout << "Exibindo relatorio de venda...\n";
+                caixa->exibirRelatorio();
                 break;
             case 0:
                 std::cout << "Saindo...\n";
                 break;
             default:
+                // abre as opções de acessibilidade para PCD
+                if(caixa->getCargo() == "caixapcd"){
+                    CaixaPcd* caixa_pcd = dynamic_cast<CaixaPcd*>(caixa);
+
+                    std::string nomeArquivo = "features/accessibility/msg_erro01.txt";
+                    caixa_pcd->falarTexto(nomeArquivo); // chama TTS
+                }
                 std::cout << "Opcao invalida. Tente novamente.\n";
         }
     } while (escolha != 0);

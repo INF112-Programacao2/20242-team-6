@@ -17,6 +17,9 @@ protected:
     std::vector<DetalheVenda> vendas; // Histórico de vendas
     double total_vendido; // guarda o valor total vendido pelo caixa
 
+    // Método auxiliar para remover espaços do nome
+    std::string removerEspacos(const std::string& str) const;
+
 public:
     // construtor
     Caixa(const std::string& nome, const std::string& id, const std::string& cpf,
@@ -37,6 +40,9 @@ public:
 
     // Método que retorna o cargo
     virtual std::string getCargo() const override;
+
+    // método para exibir o relatoório na tela
+    virtual void exibirRelatorio() const override;
 };
 
 #endif

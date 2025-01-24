@@ -15,6 +15,9 @@ public:
     // Método que retorna o cargo
     virtual std::string getCargo() const override;
 
+    // método para exibir o relatoório na tela
+    virtual void exibirRelatorio() const override;
+
 };
 
 #endif

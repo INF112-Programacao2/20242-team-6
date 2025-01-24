@@ -17,3 +17,7 @@ std::string Gerente::getCargo() const {
     return "gerente";
 }
 
+void Gerente::exibirRelatorio() const{
+    //
+}
+

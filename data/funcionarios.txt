@@ -1,2 +1,4 @@
-caixa,caixa teste,C-02,132.344.654-89,as,123, 23.0
+caixapcd,df,P-01,13213,ca,xa,0.00
+caixa,caixa teste,C-02,132.344.654-89,as,123,23.00
 gerente,teste,G-3,123.345.567-89,q,1
+caixapcd,a,1,q,q,a,0.00

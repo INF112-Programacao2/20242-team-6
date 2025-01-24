@@ -34,6 +34,9 @@ public:
     // Método virtual puro para retornar o cargo
     virtual std::string getCargo() const = 0;
 
+    // método para exibir o relatoório na tela
+    virtual void exibirRelatorio() const = 0;
+
     // Método para validar senha de login
     bool validarSenha(const std::string& senhaEntrada) const;
 

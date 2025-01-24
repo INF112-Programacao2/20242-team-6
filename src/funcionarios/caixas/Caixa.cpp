@@ -13,6 +13,7 @@ Funcionario(nome, id, cpf, email, senha), total_vendido(total_vendido){}
 void Caixa::registrarVenda(const std::string& cliente, const std::map<std::string, std::pair<int, double>>& resumoCarrinho, 
 double valorTotal, const std::string& dataHora) {
     vendas.push_back({cliente, resumoCarrinho, valorTotal, dataHora});
+    gerarRelatorio();
 }
 
 // getters
@@ -21,13 +22,18 @@ double Caixa::getTotalVendido() const{  return total_vendido; }
 // setters
 void Caixa::setTotalVendido(double total_vendido){  this->total_vendido = total_vendido; }
 
+// Método auxiliar para remover espaços do nome
+std::string Caixa::removerEspacos(const std::string& str) const {
+    std::string resultado = str;
+    resultado.erase(remove_if(resultado.begin(), resultado.end(), isspace), resultado.end());
+    return resultado;
+}
+
 // método para gerar relatório de vendas do caixa
 void Caixa::gerarRelatorio() const {
-    // Remove espaços do nome para usar no nome do arquivo
-    std::string nome_sem_espaco = getNome();
-    nome_sem_espaco.erase(remove_if(nome_sem_espaco.begin(), nome_sem_espaco.end(), isspace), nome_sem_espaco.end());
 
-    // Define o nome do arquivo
+    // Gera o nome do arquivo de relatório com base no nome do caixa
+    std::string nome_sem_espaco = removerEspacos(getNome());
     std::string nomeArquivo = "data/relatorios_caixas/relatorio-" + nome_sem_espaco + ".txt";
 
     // Verifica se o arquivo já existe para evitar repetição de cabeçalho
@@ -41,7 +47,7 @@ void Caixa::gerarRelatorio() const {
 
     // Escreve o cabeçalho apenas se o arquivo for novo
     if (!arquivoExiste) {
-        arquivo << "Relatorio de Vendas\n";
+        arquivo << "Relatório de Vendas\n";
         arquivo << "--------------------------------------------------------------------------\n";
         arquivo << "Nome: " << getNome() << std::endl;
         arquivo << "CPF: " << getCpf() << std::endl;
@@ -55,7 +61,7 @@ void Caixa::gerarRelatorio() const {
         arquivo << "Data: " << venda.dataHora << "\n";
         arquivo << "--------------------------------------------------------------------------\n";
         arquivo << "Produtos vendidos:\n";
-        arquivo << "Quantidade  Produto                            Preco Unitario  Preco Total\n";
+        arquivo << "Quantidade  Produto                            Preço Unitário  Preço Total\n";
 
         for (const auto& [produto, detalhes] : venda.resumoCarrinho) {
             int quantidade = detalhes.first;
@@ -79,6 +85,40 @@ void Caixa::gerarRelatorio() const {
     arquivo.close();
 }
 
+// método para exibir o relatoório na tela
+void Caixa::exibirRelatorio() const {
+    // Gera o nome do arquivo de relatório com base no nome do caixa
+    std::string nomeSemEspacos = removerEspacos(getNome());
+    std::string nomeArquivo = "data/relatorios_caixas/relatorio-" + nomeSemEspacos + ".txt";
+
+    // Verifica se o arquivo existe
+    std::ifstream arquivo(nomeArquivo);
+    if (!arquivo.is_open()) {
+        throw std::runtime_error("Erro: o arquivo " + nomeArquivo + " não existe ou não pode ser aberto.");
+    }
+    arquivo.close(); // Fecha o arquivo, pois só queremos verificar sua existência
+
+    // Abre o arquivo no editor de texto padrão
+#if defined(_WIN32) || defined(_WIN64)
+    // Comando para Windows
+    std::string comando = "start \"\" \"" + nomeArquivo + "\"";
+#elif defined(__linux__)
+    // Comando para Linux
+    std::string comando = "xdg-open \"" + nomeArquivo + "\"";
+#elif defined(__APPLE__)
+    // Comando para macOS
+    std::string comando = "open \"" + nomeArquivo + "\"";
+#else
+    throw std::runtime_error("Sistema operacional não suportado.");
+#endif
+
+    int resultado = system(comando.c_str());
+
+    // Verifica se houve erro ao abrir o editor de texto
+    if (resultado != 0) {
+        throw std::runtime_error("Erro ao abrir o editor de texto padrão.");
+    }
+}
 
 // Método que retorna o cargo
 std::string Caixa::getCargo() const{

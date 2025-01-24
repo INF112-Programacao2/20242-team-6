@@ -1,5 +1,5 @@
 #include "Venda.h"
-#include "Caixa.h"
+#include "CaixaPCD.h"
 #include "NotaFiscal.h"
 #include <iostream>
 #include <vector>
@@ -15,6 +15,14 @@ void Venda::iniciarVenda(Funcionario* caixa, Estoque& estoque){
     // armazena nome e cpf do cliente
     std::string nome_cliente;
     std::string cpf_cliente;
+
+    // abre as opções de acessibilidade para PCD
+    if(caixa->getCargo() == "caixapcd"){
+        CaixaPcd* caixa_pcd = dynamic_cast<CaixaPcd*>(caixa);
+
+        std::string nomeArquivo = "features/accessibility/cadastro_cliente.txt";
+        caixa_pcd->falarTexto(nomeArquivo); // chama TTS
+    }
 
     // pedir nome do cliente
     std::cout << "Nome do cliente: ";
