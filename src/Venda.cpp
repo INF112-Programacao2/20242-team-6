@@ -1,6 +1,7 @@
 #include "Venda.h"
 #include "CaixaPCD.h"
 #include "NotaFiscal.h"
+#include "Tela.h"
 #include <iostream>
 #include <vector>
 #include <stdexcept>
@@ -23,6 +24,8 @@ void Venda::iniciarVenda(Funcionario* caixa, Estoque& estoque){
         std::string nomeArquivo = "features/accessibility/cadastro_cliente.txt";
         caixa_pcd->falarTexto(nomeArquivo); // chama TTS
     }
+
+    Tela::limpar(); // limpa tela
 
     // pedir nome do cliente
     std::cout << "Nome do cliente: ";
@@ -79,11 +82,42 @@ void Venda::finalizarVenda(Cliente& cliente, Funcionario* caixa, Estoque& estoqu
         // Registra a venda no caixa
         novo_caixa->registrarVenda(cliente.getNome(), carrinho.getResumoCarrinho(), carrinho.getValorTotal(), dataHoraStr);
 
-        // Exibe mensagem de finalização
-        std::cout << "Venda finalizada com sucesso!\n";
-        std::cout << "Cliente: " << cliente.getNome() << "\n";
-        std::cout << "Total da compra: R$" << std::fixed << std::setprecision(2) << carrinho.getValorTotal() << "\n";
+        // Exibe mensagem de finalização (adaptado para caixa_pcd)
+        Tela::limpar(); // limpa tela
+
+        // Cria o buffer para armazenar a saída
+        std::ostringstream buffer;
+
+        // verifica se a venda foi feita ou cancelada
+        if(carrinho.getValorTotal() > 0.0){
+
+            // Escreve as mensagens no buffer
+            buffer << "Venda finalizada com sucesso!\n"
+                << "Cliente: " << cliente.getNome() << "\n"
+                << "Total da compra: R$" << std::fixed << std::setprecision(2) << carrinho.getValorTotal() << "\n"
+                << "Pressione Enter para continuar...\n";
+        }else{
+
+            // Escreve as mensagens no buffer
+            buffer << "Venda cancelada!\n"
+                << "Pressione Enter para continuar...\n";
+
+        }
+
+        // Chama a função para registrar a saída
+        caixa->registrarSaida(buffer.str(), "features/accessibility/venda_finalizada.txt");
+        
+        // abre as opções de acessibilidade para PCD
+        if(caixa->getCargo() == "caixapcd"){
+            CaixaPcd* caixa_pcd = dynamic_cast<CaixaPcd*>(caixa);
+
+            std::string nomeArquivo = "features/accessibility/venda_finalizada.txt";
+            caixa_pcd->falarTexto(nomeArquivo); // chama TTS
+        }
+        
+        std::cin.ignore(); // Aguarda o usuário pressionar Enter
+
     } else {
-        std::cerr << "Funcionario fornecido nao e um Caixa.\n";
+        std::cerr << "Funcionário fornecido não é um Caixa.\n";
     }
 }

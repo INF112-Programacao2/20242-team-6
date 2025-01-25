@@ -40,6 +40,9 @@ public:
     // Método para validar senha de login
     bool validarSenha(const std::string& senhaEntrada) const;
 
+    // Função genérica para registrar saída no console e em um arquivo (usada para integrar TTS para caixaPCD)
+    void registrarSaida(const std::string& mensagem, const std::string& nome_arquivo);
+
 };
 
 

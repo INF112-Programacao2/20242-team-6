@@ -13,8 +13,9 @@ private:
     Cliente& cliente;
     Funcionario* caixa;
     Estoque& estoque;
-    std::vector<Produto> produto_carrinho;
+    std::vector<Produto> produto_carrinho; // Produtos no carrinho
     std::map<std::string, std::pair<int, double>> resumoCarrinho;  // Map para agrupar produtos
+    std::vector<std::pair<Lote*, int>> paresLote; // Rastreamento dos lotes e quantidades
     double valor_total;
     int quantidade_produto;
 public:
@@ -33,7 +34,12 @@ public:
     void setValorTotal(double valor_total);
     void setQuantidadeProduto(int quantidade_produto);
 
+    // gerencia o carrinho durante a compra
     void realizarCompra();
+
+    // remove um produto do carrinho
+    void removerProdutoCarrinho(const std::string& nomeProduto, int quantidadeRemover);
+
     
 };
 

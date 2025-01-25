@@ -1,4 +1,5 @@
 #include "Estoque.h"
+#include "Tela.h"
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -18,7 +19,10 @@ Estoque::Estoque() {
 void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque){
     int escolha;
     do {
-        std::cout << "\n1. Adicionar novo lote de um produto\n"
+
+        Tela::limpar(); // limpa tela
+
+        std::cout << "1. Adicionar novo lote de um produto\n"
                   << "2. Remover lote\n"
                   << "0. Sair\n"
                   << "Escolha uma opcao: ";
@@ -29,6 +33,8 @@ void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque){
             std::string nome, codigo, data_validade, descricao;
             int tamanho;
             double preco;
+
+            Tela::limpar(); // limpa tela
 
             std::cout << "Nome: ";
             std::cin.ignore(); // Limpa buffer
@@ -127,19 +133,21 @@ void Estoque::salvarEstoqueNoArquivo(const std::string& nomeArquivo) const{
     }
 
     for (const auto& [codigo, lote] : estoque) { // percorre o Estoque e salva lote e produtos
-        arquivo << lote->getNome() << ","
-                << lote-> getCodigo()<< ","
-                << lote->getValidade() << ","
-                << lote->getTamanho() << "\n";
-        for(size_t i=0; i<lote->getTamanho(); i++){
-            Produto produto = lote->pesquisarProduto(static_cast<int>(i));
-            arquivo << produto.getNome() << ","
-                << produto.getId() << ","
-                << produto.getPreco() << ","
-                << produto.getDescricao() << "\n";
-        }        
+        
+        if(lote->getTamanho() > 0){
+            arquivo << lote->getNome() << ","
+                    << lote-> getCodigo()<< ","
+                    << lote->getValidade() << ","
+                    << lote->getTamanho() << "\n";
+            for(size_t i=0; i<lote->getTamanho(); i++){
+                Produto produto = lote->pesquisarProduto(static_cast<int>(i));
+                arquivo << produto.getNome() << ","
+                    << produto.getId() << ","
+                    << produto.getPreco() << ","
+                    << produto.getDescricao() << "\n";
+            }        
+        }
     }
-
     arquivo.close();
 }
 

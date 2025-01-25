@@ -24,11 +24,13 @@ void CaixaPcd::gerarRelatorio() const{
 
     // Escreve o cabeçalho apenas se o arquivo for novo
     if (!arquivoExiste) {
-        arquivo << "Relatório de Vendas.\n";
-        arquivo << "--------------------------------------------------------------------------\n";
+        arquivo << "==========================================================================\n";
+        arquivo << "                         RELATÓRIO DE VENDAS.\n";
+        arquivo << "==========================================================================\n";
         arquivo << "Nome: " << getNome() << ".\n";
         arquivo << "CPF: " << getCpf() << ".\n";
         arquivo << "Cargo: " << getCargo() << ".\n";
+        arquivo << "--------------------------------------------------------------------------\n";
         
     }
 
@@ -37,7 +39,7 @@ void CaixaPcd::gerarRelatorio() const{
         arquivo << "Cliente: " << venda.cliente << ".\n";
         arquivo << "Data: " << venda.dataHora << ".\n";
         arquivo << "--------------------------------------------------------------------------\n";
-        arquivo << "Produtos vendidos:\n";
+        arquivo << "                          PRODUTOS VENDIDOS:\n";
         arquivo << "Quantidade.  Produto.                            Preço Unitário.  Preço Total.\n";
 
         for (const auto& [produto, detalhes] : venda.resumoCarrinho) {
@@ -52,8 +54,8 @@ void CaixaPcd::gerarRelatorio() const{
         }
 
         arquivo << "--------------------------------------------------------------------------\n";
-        arquivo << "Total da venda: " << std::fixed << std::setprecision(2) << venda.valorTotal << "reais\n";
-        arquivo << "--------------------------------------------------------------------------\n\n";
+        arquivo << "Total da venda: " << std::fixed << std::setprecision(2) << venda.valorTotal << " reais\n";
+        arquivo << "--------------------------------------------------------------------------\n";
     }
 
     // Fecha o arquivo
@@ -107,9 +109,8 @@ void CaixaPcd::exibirRelatorio() const{
 void CaixaPcd::falarTexto(std::string& caminhoArquivo) const{
     // Abre o arquivo de texto
     std::ifstream arquivo(caminhoArquivo);
-    if (!arquivo.is_open()) {
-        std::cerr << "Erro ao abrir o arquivo: " << caminhoArquivo << std::endl;
-        return;
+    if (!arquivo) {
+        throw std::runtime_error("Erro ao abrir o arquivo para salvar Estoque.");
     }
 
     // Lê o conteúdo do arquivo linha por linha
@@ -124,3 +125,5 @@ void CaixaPcd::falarTexto(std::string& caminhoArquivo) const{
     std::string comando = "echo \"" + textoCompleto + "\" | rhvoice.test";
     std::system(comando.c_str());
 }
+
+

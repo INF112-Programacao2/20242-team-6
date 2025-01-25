@@ -3,6 +3,7 @@
 #include "Caixa.h"
 #include "CaixaPCD.h"
 #include <iostream>
+#include <fstream>
 
 // Construtor
 Funcionario::Funcionario(const std::string& nome, const std::string& id, const std::string& cpf,
@@ -24,3 +25,21 @@ bool Funcionario::validarSenha(const std::string& senhaEntrada) const{
     return senha == senhaEntrada;
 }
 
+// Função genérica para registrar saída no console e em um arquivo (usada para integrar TTS para caixaPCD)
+void Funcionario::registrarSaida(const std::string& mensagem, const std::string& nome_arquivo) {
+    // Abre o arquivo no modo escrita
+    std::ofstream arquivo(nome_arquivo, std::ios::out);
+    if (!arquivo) {
+        std::cerr << "Erro ao abrir o arquivo: " << nome_arquivo << "\n";
+        return;
+    }
+
+    // Escreve a mensagem no arquivo
+    arquivo << mensagem;
+
+    // Fecha o arquivo
+    arquivo.close();
+
+    // Também exibe no console
+    std::cout << mensagem;
+}

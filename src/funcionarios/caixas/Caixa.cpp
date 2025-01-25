@@ -42,16 +42,18 @@ void Caixa::gerarRelatorio() const {
     // Abre o arquivo para escrita (append mode para manter dados existentes)
     std::ofstream arquivo(nomeArquivo, std::ios::app);
     if (!arquivo) {
-        throw std::runtime_error("Erro ao abrir o arquivo para gerar relatorio.");
+        throw std::runtime_error("Erro ao abrir o arquivo para gerar relatório.");
     }
 
     // Escreve o cabeçalho apenas se o arquivo for novo
     if (!arquivoExiste) {
-        arquivo << "Relatório de Vendas\n";
-        arquivo << "--------------------------------------------------------------------------\n";
+        arquivo << "==========================================================================\n";
+        arquivo << "                         RELATÓRIO DE VENDAS\n";
+        arquivo << "==========================================================================\n";
         arquivo << "Nome: " << getNome() << std::endl;
         arquivo << "CPF: " << getCpf() << std::endl;
         arquivo << "Cargo: " << getCargo() << std::endl;
+        arquivo << "--------------------------------------------------------------------------\n";
         
     }
 
@@ -60,7 +62,7 @@ void Caixa::gerarRelatorio() const {
         arquivo << "Cliente: " << venda.cliente << "\n";
         arquivo << "Data: " << venda.dataHora << "\n";
         arquivo << "--------------------------------------------------------------------------\n";
-        arquivo << "Produtos vendidos:\n";
+        arquivo << "                          PRODUTOS VENDIDOS:\n";
         arquivo << "Quantidade  Produto                            Preço Unitário  Preço Total\n";
 
         for (const auto& [produto, detalhes] : venda.resumoCarrinho) {
@@ -76,7 +78,7 @@ void Caixa::gerarRelatorio() const {
 
         arquivo << "--------------------------------------------------------------------------\n";
         arquivo << "Total da venda: R$" << std::fixed << std::setprecision(2) << venda.valorTotal << "\n";
-        arquivo << "--------------------------------------------------------------------------\n\n";
+        arquivo << "--------------------------------------------------------------------------\n";
     }
 
     

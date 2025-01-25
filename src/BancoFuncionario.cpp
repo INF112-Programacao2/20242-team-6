@@ -1,4 +1,5 @@
 #include "BancoFuncionario.h"
+#include "Tela.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -18,17 +19,29 @@ BancoFuncionario::BancoFuncionario() {
 void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFuncionario& banco) {
     int escolha;
     do {
-        std::cout << "\n1. Adicionar Funcionario\n"
-                  << "2. Remover Funcionario\n"
-                  << "3. Exibir informacao de um funcionario\n"
-                  << "4. Top caixas com mais vendas\n"
-                  << "0. Sair\n"
-                  << "Escolha uma opcao: ";
+
+        Tela::limpar(); // limpa tela
+
+        std::cout << "=============================================\n";
+        std::cout << "          GERENCIAMENTO DE FUNCIONARIOS      \n";
+        std::cout << "=============================================\n";
+        std::cout << "  1. Adicionar Funcionário                  \n";
+        std::cout << "  2. Remover Funcionário                    \n";
+        std::cout << "  3. Exibir Informação de um Funcionário    \n";
+        std::cout << "  4. Top Caixas com Mais Vendas             \n";
+        std::cout << "  0. Sair                                   \n";
+        std::cout << "=============================================\n";
+        std::cout << "Escolha uma opção: ";
         std::cin >> escolha;
 
         if (escolha == 1) {
             // Adicionar novo funcionário
             std::string nome, id, cpf, email, senha, cargo;
+
+            Tela::limpar(); // limpa tela
+
+            // subtítulo
+            std::cout << "ADICIONAR FUNCIONÁRIO\n";
 
             std::cout << "Cargo (Gerente, Caixa, CaixaPCD): ";
             std::cin >> cargo;
@@ -84,7 +97,7 @@ void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFunciona
                 } else if (cargo == "caixapcd") {
                     banco.adicionarFuncionario(gerente, std::make_unique<CaixaPcd>(nome, id, cpf, email, senha, 0.0));
                 } else {
-                    std::cerr << "Cargo invalido.\n";
+                    std::cerr << "Cargo inválido.\n";
                 }
                 salvarFuncionariosNoArquivo("data/funcionarios.txt");    // salva o lote no arquivo texto  
 
@@ -94,8 +107,14 @@ void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFunciona
 
         } else if (escolha == 2) {
             // Remover funcionário
+
+            Tela::limpar(); // limpa tela
+
+            // subtítulo
+            std::cout << "REMOVER FUNCIONÁRIO\n";
+
             std::string id;
-            std::cout << "ID do funcionario a ser removido: ";
+            std::cout << "ID do funcionário a ser removido: ";
             std::cin >> id;
 
             try {
@@ -119,16 +138,16 @@ void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFunciona
 // Adiciona um funcionário ao banco de dados
 void BancoFuncionario::adicionarFuncionario(Funcionario* gerente, std::unique_ptr<Funcionario> novoFuncionario) {
     if (gerente->getCargo() != "gerente") {
-        throw std::runtime_error("Apenas gerentes podem adicionar novos funcionarios.");
+        throw std::runtime_error("Apenas gerentes podem adicionar novos funcionários.");
     }
 
     const std::string& id = novoFuncionario->getId();
     if (funcionarios.find(id) != funcionarios.end()) {
-        throw std::runtime_error("Ja existe um funcionario com este ID.");
+        throw std::runtime_error("Já existe um funcionário com este ID.");
     }
 
     funcionarios[id] = std::move(novoFuncionario);
-    std::cout << "Funcionario adicionado com sucesso.\n";
+    std::cout << "Funcionário adicionado com sucesso.\n";
 }
 
 // Remove um funcionário do banco de dados
@@ -139,11 +158,11 @@ void BancoFuncionario::removerFuncionario(Funcionario* gerente, const std::strin
 
     auto it = funcionarios.find(id);
     if (it == funcionarios.end()) {
-        throw std::runtime_error("Funcionario nao encontrado.");
+        throw std::runtime_error("Funcionário nao encontrado.");
     }
 
     funcionarios.erase(it);
-    std::cout << "Funcionario removido com sucesso.\n";
+    std::cout << "Funcionário removido com sucesso.\n";
 }
 
 // Retorna um ponteiro para o funcionário, se encontrado
@@ -162,14 +181,14 @@ Funcionario* BancoFuncionario::realizarLogin(const std::string& email, const std
     if (funcionario && funcionario->validarSenha(senha)) {
         return funcionario;
     }
-    throw std::runtime_error("Email ou senha invalidos.");
+    throw std::runtime_error("Email ou senha inválidos.");
 }
 
 // salva os funcionarios em um arquivo txt (simula o banco de dados)
 void BancoFuncionario::salvarFuncionariosNoArquivo(const std::string& nomeArquivo) const {
     std::ofstream arquivo(nomeArquivo, std::ios::out); // abre somente para escrita
     if (!arquivo) {
-        throw std::runtime_error("Erro ao abrir o arquivo para salvar funcionarios.");
+        throw std::runtime_error("Erro ao abrir o arquivo para salvar funcionários.");
     }
 
     for (const auto& [id, funcionario] : funcionarios) { // percorre o banco de funcionarios
@@ -198,7 +217,7 @@ void BancoFuncionario::salvarFuncionariosNoArquivo(const std::string& nomeArquiv
 void BancoFuncionario::carregarFuncionariosDoArquivo(const std::string& nomeArquivo) {
     std::ifstream arquivo(nomeArquivo, std::ios::in); // abre somente para leitura
     if (!arquivo) {
-        throw std::runtime_error("Erro ao abrir o arquivo para carregar funcionarios.");
+        throw std::runtime_error("Erro ao abrir o arquivo para carregar funcionários.");
     }
 
     funcionarios.clear(); // limpa o banco de funcionarios
@@ -225,9 +244,9 @@ void BancoFuncionario::carregarFuncionariosDoArquivo(const std::string& nomeArqu
             try {
                 valor_total = std::stod(valor_total_str);
             } catch (const std::invalid_argument&) {
-                throw std::runtime_error("Valor total vendido invalido no arquivo.");
+                throw std::runtime_error("Valor total vendido inválido no arquivo.");
             } catch (const std::out_of_range&) {
-                throw std::runtime_error("Valor total vendido fora do intervalo valido.");
+                throw std::runtime_error("Valor total vendido fora do intervalo válido.");
             }
         }
 

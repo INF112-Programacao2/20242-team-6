@@ -42,10 +42,17 @@ void Lote::adicionarProduto(const Produto& produto) {
     produtos.push_back(produto); // adiciona ao lote    
 }
 
+// Adiciona uma quantidade de produtos ao lote (sobrecarga)
+void Lote::adicionarProduto(const Produto& produto, int quantidade) {
+    for (int i = 0; i < quantidade; ++i) {
+        produtos.push_back(produto); // Adiciona várias cópias do produto
+    }
+}
+
 // Método para remover uma quantidade de produtos do lote
 void Lote::removerProdutos(int quantidade){
     if (quantidade < 0) {
-        throw std::invalid_argument("A quantidade de produtos a ser removida nao pode ser negativa.");
+        throw std::invalid_argument("A quantidade de produtos a ser removida não pode ser negativa.");
     }
     if(quantidade == 0){
         return;     // retorna sem fazer nada
