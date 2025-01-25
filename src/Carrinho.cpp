@@ -1,4 +1,5 @@
 #include "Carrinho.h"
+#include "CaixaPCD.h"
 #include "Tela.h"
 #include <iostream>
 #include <iomanip>
@@ -37,12 +38,28 @@ void Carrinho::realizarCompra(){
 
         int escolha; // entrada do usuário
 
-        std::cout << "1. Adicionar Produto\n"
-                  << "2. Remover Produto\n"
-                  << "3. Finalizar Compra\n"
-                  << "0. Cancelar Compra\n"
-                  << "Escolha uma opcao: ";
-        std::cin >> escolha;
+        Tela::limpar(); // limpa tela
+
+        std::cout << "=============================================\n";
+        std::cout << "                    CARRINHO               \n";
+        std::cout << "=============================================\n";
+        std::cout << " 1. Adicionar Produto                       \n";
+        std::cout << " 2. Remover Produto                        \n";
+        std::cout << " 3. Finalizar Compra                       \n";
+        std::cout << " 0. Cancelar Compra                        \n";
+        std::cout << "=============================================\n";
+        std::cout << "Escolha uma opcao: ";
+
+        // abre as opções de acessibilidade para PCD
+        if(caixa->getCargo() == "caixapcd"){
+            CaixaPcd* caixa_pcd = dynamic_cast<CaixaPcd*>(caixa);
+
+            std::string nomeArquivo = "features/accessibility/carrinho_opcao.txt";
+            caixa_pcd->falarTexto(nomeArquivo); // chama TTS
+        }
+
+        std::cin >> escolha;    // recebe a opção
+
         std::cin.ignore(); // limpa o buffer 
         try{
             switch (escolha)

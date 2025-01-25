@@ -4,6 +4,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <iostream>
+#include <thread>
 
 // construtor inicializa o banco de dados com alguns funcionários
 Estoque::Estoque() {
@@ -16,53 +17,99 @@ Estoque::Estoque() {
 }
 
 // gerencia o estoque (gerente tem permissão)
-void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque){
+void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque) {
     int escolha;
     do {
-
         Tela::limpar(); // limpa tela
 
-        std::cout << "1. Adicionar novo lote de um produto\n"
-                  << "2. Remover lote\n"
-                  << "0. Sair\n"
-                  << "Escolha uma opcao: ";
+        std::cout << "=============================================\n";
+        std::cout << "          GERENCIAMENTO DE ESTOQUE           \n";
+        std::cout << "=============================================\n";
+        std::cout << " 1. Adicionar novo lote de um produto        \n";
+        std::cout << " 2. Remover lote                             \n";
+        std::cout << " 0. Sair                                     \n";
+        std::cout << "=============================================\n";
+        std::cout << "Escolha uma opção: ";
+
         std::cin >> escolha;
+
+        // Verifica falha na entrada
+        if (std::cin.fail()) {
+            std::cin.clear(); // Limpa flag de erro
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignora entrada inválida
+            std::cout << "Entrada inválida. Por favor, digite um número.\n"; // precisa do buffer
+            std::this_thread::sleep_for(std::chrono::seconds(2)); // Espera por 2 segundos
+            continue; // Volta ao início do loop
+        }
 
         if (escolha == 1) {
             // Adicionar novo lote
             std::string nome, codigo, data_validade, descricao;
             int tamanho;
             double preco;
+            size_t limite_nome = 70;    // guarda tamanho máximo do nome do produto
+            size_t limite_descricao = 100; // guarda tamanho máximo da descrição
 
             Tela::limpar(); // limpa tela
 
-            std::cout << "Nome: ";
-            std::cin.ignore(); // Limpa buffer
-            std::getline(std::cin, nome);
-            std::cout << "Codigo do lote: ";
-            std::cin >> codigo;
-            std::cout << "Data de validade (dd/mm/aaaa): ";
-            std::cin >> data_validade;
-            std::cout << "Quantidade: ";
-            std::cin >> tamanho;
-            std::cout << "Preco da unidade: ";
-            std::cin >> preco;
-            std::cout << "Descricao: ";
-            std::cin.ignore(); // Limpa buffer
-            std::getline(std::cin, descricao);
-
-            std::unique_ptr<Lote> lote = std::make_unique<Lote>(nome, codigo, data_validade, tamanho);
-            
-            for(int i=0; i<tamanho; i++){
-                lote->preencherLote(nome, i+1, preco, descricao); // preenche o lote com os produtos
-            }
-
             try {
+                std::cout << "Nome: ";
+                std::cin.ignore(); // Limpa buffer
+                std::getline(std::cin, nome);
 
-                if(lote->verificarValidade()){
+                if (nome.size() > limite_nome) { // garante que o tamanho do nome seja controlado
+                    throw std::out_of_range("Nome do produto deve ter no máximo " + std::to_string(limite_nome) + " caracteres\n");
+                    std::this_thread::sleep_for(std::chrono::seconds(2)); // Espera por 2 segundos
+                }
+
+                std::cout << "Codigo do lote: ";
+                std::cin >> codigo;
+
+                std::cout << "Data de validade (dd/mm/aaaa): ";
+                std::cin >> data_validade;
+
+                std::cout << "Quantidade: ";
+                std::cin >> tamanho;
+
+                if (std::cin.fail()) {
+                    throw std::invalid_argument("Entrada inválida para quantidade.");
+                }
+
+                if (tamanho <= 0) { // garante tamanho válido
+                    throw std::invalid_argument("Quantidade de produtos deve ser maior que zero.");
+                }
+
+                std::cout << "Preço da unidade: ";
+                std::cin >> preco;
+
+                if (std::cin.fail()) {
+                    throw std::invalid_argument("Entrada inválida para preço.");
+                }
+
+                if (preco <= 0.0) { // garante preço válido
+                    throw std::invalid_argument("Preço dos produtos deve ser maior que zero.");
+                }
+
+                std::cout << "Descrição: ";
+                std::cin.ignore(); // Limpa buffer
+                std::getline(std::cin, descricao);
+
+                if (descricao.size() > limite_descricao) { // garante que o tamanho da descrição seja controlado
+                    throw std::out_of_range("Descrição do produto deve ter no máximo " + std::to_string(limite_descricao) + " caracteres\n");
+                }
+
+                // cria um lote temporário no heap para armazenar no estoque.
+                std::unique_ptr<Lote> lote = std::make_unique<Lote>(nome, codigo, data_validade, tamanho);
+
+                for (int i = 0; i < tamanho; i++) {
+                    lote->preencherLote(nome, i + 1, preco, descricao); // preenche o lote com os produtos
+                }
+
+                if (lote->verificarValidade()) { // garante produto dentro da validade
                     throw std::runtime_error("Lote com produtos fora da validade.");
                 }
-                estoque.adicionarLote(gerente, std::move(lote));
+
+                estoque.adicionarLote(gerente, std::move(lote));    // adiciona lote no estoque
                 salvarEstoqueNoArquivo("data/estoque.txt"); // salva o lote no arquivo texto
 
             } catch (const std::exception& e) {
@@ -70,10 +117,12 @@ void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque){
             }
 
         } else if (escolha == 2) {
-            // Remover funcionário
+            // Remover lote
             std::string codigo;
             std::cout << "Codigo do lote a ser removido: ";
             std::cin >> codigo;
+
+            // tratar excessão
 
             try {
                 estoque.removerLote(gerente, codigo);
@@ -82,8 +131,9 @@ void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque){
                 std::cerr << "Erro: " << e.what() << "\n";
             }
         }
-    } while (escolha != 0);    
+    } while (escolha != 0);
 }
+
 
 // busca o produto(lote) por nome
 Lote* Estoque::buscarProdutoPorNome(const std::string& nome){
@@ -113,12 +163,12 @@ void Estoque::adicionarLote(Funcionario* gerente, std::unique_ptr<Lote> lote){
 // remove um lote do estoque
 void Estoque::removerLote(Funcionario* gerente, const std::string& codigo){
     if (gerente->getCargo() != "gerente") {
-        throw std::runtime_error("Apenas gerentes podem remover funcionarios.");
+        throw std::runtime_error("Apenas gerentes podem remover funcionários.");
     }
 
     auto it = estoque.find(codigo);
     if(it == estoque.end()){
-        throw std::runtime_error("Lote nao existe");
+        throw std::runtime_error("Lote não existe");
     }
 
     estoque.erase(it);
@@ -175,7 +225,7 @@ void Estoque::carregarEstoqueDoArquivo(const std::string& nomeArquivo){
             std::getline(stream, tamanhoStr, ',');
 
             if (nome.empty() || codigo.empty() || validade.empty() || tamanhoStr.empty()) {
-                throw std::runtime_error("Formato invalido no arquivo para o lote.");
+                throw std::runtime_error("Formato inválido no arquivo para o lote.");
             }
 
             // Converter tamanho
@@ -197,7 +247,7 @@ void Estoque::carregarEstoqueDoArquivo(const std::string& nomeArquivo){
                 std::getline(stream, descricao, ',');
 
                 if (nome.empty() || idStr.empty() || precoStr.empty() || descricao.empty()) {
-                    throw std::runtime_error("Formato invalido no arquivo para o produto.");
+                    throw std::runtime_error("Formato inválido no arquivo para o produto.");
                 }
 
                 // Conversões

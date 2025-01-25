@@ -16,7 +16,7 @@ public:
     NotaFiscal(Funcionario* caixa, Cliente& cliente, Carrinho& carrinho);
 
     //gera a nota fiscal
-    void gerarNotaFiscal();
+    void gerarNotaFiscal(const std::string& data_hora);
 };
 
 #endif

@@ -17,6 +17,12 @@ void Venda::iniciarVenda(Funcionario* caixa, Estoque& estoque){
     std::string nome_cliente;
     std::string cpf_cliente;
 
+    Tela::limpar(); // limpa tela
+
+    std::cout << "=============================================\n";
+    std::cout << "                CADASTRO CLIENTE               \n";
+    std::cout << "=============================================\n";
+
     // abre as opções de acessibilidade para PCD
     if(caixa->getCargo() == "caixapcd"){
         CaixaPcd* caixa_pcd = dynamic_cast<CaixaPcd*>(caixa);
@@ -24,8 +30,6 @@ void Venda::iniciarVenda(Funcionario* caixa, Estoque& estoque){
         std::string nomeArquivo = "features/accessibility/cadastro_cliente.txt";
         caixa_pcd->falarTexto(nomeArquivo); // chama TTS
     }
-
-    Tela::limpar(); // limpa tela
 
     // pedir nome do cliente
     std::cout << "Nome do cliente: ";
@@ -72,24 +76,26 @@ void Venda::finalizarVenda(Cliente& cliente, Funcionario* caixa, Estoque& estoqu
         ss << std::put_time(std::localtime(&tt), "%H:%M %d/%m/%Y");
         std::string dataHoraStr = ss.str();
 
-        // Imprime um arquivo com a nota fiscal
-        nota.gerarNotaFiscal();
+        if(carrinho.getValorTotal() > 0.0){         // verifica se a venda não foi cancelada para gerar relatório e nota fiscal
+            // Imprime um arquivo com a nota fiscal
+            nota.gerarNotaFiscal(dataHoraStr);
 
-        // guarda o total vendido pelo caixa
-        double total = carrinho.getValorTotal() + novo_caixa->getTotalVendido();
-        novo_caixa->setTotalVendido(total);
+            // guarda o total vendido pelo caixa
+            double total = carrinho.getValorTotal() + novo_caixa->getTotalVendido();
+            novo_caixa->setTotalVendido(total);
 
-        // Registra a venda no caixa
-        novo_caixa->registrarVenda(cliente.getNome(), carrinho.getResumoCarrinho(), carrinho.getValorTotal(), dataHoraStr);
+            // Registra a venda pelo caixa
+            novo_caixa->registrarVenda(cliente.getNome(), carrinho.getResumoCarrinho(), carrinho.getValorTotal(), dataHoraStr);
+        }
 
-        // Exibe mensagem de finalização (adaptado para caixa_pcd)
         Tela::limpar(); // limpa tela
 
+        // Exibe mensagem de finalização (adaptado para caixa_pcd)
         // Cria o buffer para armazenar a saída
         std::ostringstream buffer;
 
         // verifica se a venda foi feita ou cancelada
-        if(carrinho.getValorTotal() > 0.0){
+        if(carrinho.getValorTotal() > 0.0){ // verifica se a venda não foi cancelada
 
             // Escreve as mensagens no buffer
             buffer << "Venda finalizada com sucesso!\n"

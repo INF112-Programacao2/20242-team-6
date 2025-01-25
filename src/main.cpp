@@ -14,66 +14,69 @@ int main() {
     BancoFuncionario banco;
     Estoque estoque;
 
-    try {
-        std::string email, senha;
+    std::string email, senha;
+    int escolha = -1; // inicia o número sentinela 
 
-        int escolha = -1; // inicia o numero sentinela 
-
-        do{
+    do {
+        try {
             // Exibindo a tela inicial
             exibirMenuInicial();
 
-            std::cin >> escolha; // loga usuario ou fecha programa
+            std::cin >> escolha; // loga usuário ou fecha programa
 
-            if(std::cin.fail() || (escolha != 1 && escolha != 0)){
-                throw std::invalid_argument("Opção inválida!");
+            if (std::cin.fail() || (escolha != 1 && escolha != 0)) {
+                std::cin.clear(); // limpa a flag de erro
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // descarta entrada inválida
+                throw std::invalid_argument("Opção inválida! Por favor, escolha 1 para login ou 0 para sair.");
             }
 
-            switch (escolha)
-            {
-            case 1:
-                Tela::limpar(); // limpa tela
+            switch (escolha) {
+                case 1:
+                    while (true) { // Loop para retornar à tela de login em caso de erro
+                        try {
+                            Tela::limpar(); // limpa tela
 
-                std::cout << "==================================================\n";
-                std::cout << "                      LOGIN              \n";
-                std::cout << "==================================================\n";
+                            std::cout << "==================================================\n";
+                            std::cout << "                      LOGIN              \n";
+                            std::cout << "==================================================\n";
 
-                std::cout << "Digite seu email: ";
-                std::cin >> email;
-                std::cout << "Digite sua senha: ";
-                std::cin >> senha;
+                            std::cout << "Digite seu email: ";
+                            std::cin >> email;
+                            std::cout << "Digite sua senha: ";
+                            std::cin >> senha;
 
-                try{
-                    Funcionario* funcionario = banco.realizarLogin(email, senha);
-                 
+                            Funcionario* funcionario = banco.realizarLogin(email, senha);
 
-                    if (funcionario->getCargo() == "gerente") {
-                        Menu::exibirMenuGerente(funcionario, banco, estoque);
-                    } else if (funcionario->getCargo() == "caixa" || funcionario->getCargo() == "caixapcd") {
-                        Menu::exibirMenuCaixa(funcionario, estoque);
-                    } else {
-                        std::cout << "Tipo de funcionário não reconhecido.\n";
-
-                        // Espera por 1 segundo
-                        std::this_thread::sleep_for(std::chrono::seconds(1));
+                            // Determina o menu com base no cargo do funcionário
+                            if (funcionario->getCargo() == "gerente") {
+                                Menu::exibirMenuGerente(funcionario, banco, estoque);
+                            } else if (funcionario->getCargo() == "caixa" || funcionario->getCargo() == "caixapcd") {
+                                Menu::exibirMenuCaixa(funcionario, estoque);
+                            } else {
+                                std::cout << "Tipo de funcionário não reconhecido.\n";
+                                std::this_thread::sleep_for(std::chrono::seconds(2)); // espera por 2 segundos
+                            }
+                            break; // Sai do loop de login se o login for bem-sucedido
+                        } catch (const std::exception& e) {
+                            std::cout << "Erro durante o login: " << e.what() << "\n";
+                            std::this_thread::sleep_for(std::chrono::seconds(2)); // espera antes de retornar à tela de login
+                        }
                     }
-                }catch(std::exception& e){
-                    std::cout << "Erro: " << e.what() << "\n";
-                    // Espera por 1 segundo
-                    std::this_thread::sleep_for(std::chrono::seconds(1));
-                }
-                break;
-            
-            case 0:
-                return 0; // fecha programa
-            }
-        }while(true);
-    } catch (const std::exception& e) {
-        std::cerr << "Erro: " << e.what() << "\n";
-    }
+                    break;
 
-    return 0; // fecha programa
+                case 0:
+                    std::cout << "Saindo do programa...\n";
+                    return 0; // fecha o programa
+            }
+        } catch (const std::exception& e) {
+            std::cout << "Erro: " << e.what() << "\n";
+            std::this_thread::sleep_for(std::chrono::seconds(2)); // espera antes de continuar
+        }
+    } while (true);
+
+    return 0; // fecha o programa
 }
+
 
 void exibirMenuInicial(){
     // mostra a data no menu iniciar

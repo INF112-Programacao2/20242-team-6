@@ -1,4 +1,4 @@
-Menu do Caixa:
+Menu do Caixa.
 Para Iniciar Venda: insira 1.
 Para Exibir Relatório de Vendas: insira 2.
 Para Sair: insira 0.

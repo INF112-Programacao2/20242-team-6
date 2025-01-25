@@ -9,7 +9,7 @@
 NotaFiscal::NotaFiscal(Funcionario* caixa, Cliente& cliente, Carrinho& carrinho) : caixa(caixa), cliente(cliente), carrinho(carrinho){}
 
 //gera a nota fiscal
-void NotaFiscal::gerarNotaFiscal(){
+void NotaFiscal::gerarNotaFiscal(const std::string& data_hora){
     // tira espaço do nome
     std::string nome_sem_espaco = cliente.getNome();
     nome_sem_espaco.erase(remove_if(nome_sem_espaco.begin(), nome_sem_espaco.end(), isspace), nome_sem_espaco.end());
@@ -22,13 +22,17 @@ void NotaFiscal::gerarNotaFiscal(){
         throw std::runtime_error("Erro ao abrir o arquivo para carregar nota fiscal.");
     }
 
-    // Imprime o carrinho atualizado com agrupamento por nome de produto
-    arquivo << "--------------------------------------------------------------------------\n";
+    // Imprime a nota fiscal da compra
+
+    arquivo << "==========================================================================\n";
+    arquivo << "                    NOTA FISCAL - SUPERMERCADO CCP\n";
+    arquivo << "==========================================================================\n";
     arquivo << "Nome do cliente: " << cliente.getNome() << std::endl;
     arquivo << "CPF: " << cliente.getCpf() << std::endl;
+    arquivo << "Data da compra: " << data_hora << std::endl;
     arquivo << "--------------------------------------------------------------------------\n";
     arquivo << "Compra realizada:\n";
-    arquivo << "Quantidade  Produto                            Preco Unitario  Preco Total\n";
+    arquivo << "Quantidade  Produto                            Preço Unitário  Preço Total\n";
 
     // Exibe os produtos agrupados
     double subtotal = 0;  // Subtotal acumulado
@@ -47,7 +51,7 @@ void NotaFiscal::gerarNotaFiscal(){
     }
 
     arquivo << "--------------------------------------------------------------------------\n";
-    arquivo << "Total pago: " << std::fixed << std::setprecision(2) << subtotal << std::endl;
+    arquivo << "Total pago: R$" << std::fixed << std::setprecision(2) << subtotal << std::endl;
     arquivo << "--------------------------------------------------------------------------\n";
 
     // fecha o arquivo
