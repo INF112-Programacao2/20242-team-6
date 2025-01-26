@@ -49,6 +49,19 @@ void Lote::adicionarProduto(const Produto& produto, int quantidade) {
     }
 }
 
+// Método otimizado para adicionar apenas a quantidade de produtos
+void Lote::adicionarProduto(int quantidade) {
+    if (produtos.empty()) {
+        throw std::runtime_error("Lote vazio. Não é possível adicionar quantidade sem referência a Produto.");
+    }
+
+    // Utiliza o último produto como referência para replicação
+    const Produto& referencia = produtos.back();
+    for (int i = 0; i < quantidade; ++i) {
+        produtos.push_back(referencia);
+    }
+}
+
 // Método para remover uma quantidade de produtos do lote
 void Lote::removerProdutos(int quantidade){
     if (quantidade < 0) {

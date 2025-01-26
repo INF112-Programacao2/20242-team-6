@@ -1,2 +1,4 @@
-Venda cancelada!
+Venda finalizada com sucesso!
+Cliente: fr
+Total da compra: R$14.00
 Pressione Enter para continuar...

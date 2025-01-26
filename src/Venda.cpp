@@ -52,7 +52,7 @@ void Venda::iniciarVenda(Funcionario* caixa, Estoque& estoque){
 
     // cria um carrinho e inicia a venda
     Carrinho carrinho(cliente, caixa, estoque);
-    carrinho.realizarCompra();
+    carrinho.gerenciarCarrinho(estoque);
 
     // atualiza o estoque no arquivo
     estoque.salvarEstoqueNoArquivo("data/estoque.txt");
@@ -76,7 +76,7 @@ void Venda::finalizarVenda(Cliente& cliente, Funcionario* caixa, Estoque& estoqu
         ss << std::put_time(std::localtime(&tt), "%H:%M %d/%m/%Y");
         std::string dataHoraStr = ss.str();
 
-        if(carrinho.getValorTotal() > 0.0){         // verifica se a venda não foi cancelada para gerar relatório e nota fiscal
+        if(!carrinho.getResumoCarrinho().empty()){         // verifica se a venda não foi cancelada para gerar relatório e nota fiscal
             // Imprime um arquivo com a nota fiscal
             nota.gerarNotaFiscal(dataHoraStr);
 
@@ -95,7 +95,7 @@ void Venda::finalizarVenda(Cliente& cliente, Funcionario* caixa, Estoque& estoqu
         std::ostringstream buffer;
 
         // verifica se a venda foi feita ou cancelada
-        if(carrinho.getValorTotal() > 0.0){ // verifica se a venda não foi cancelada
+        if(!carrinho.getResumoCarrinho().empty()){ // verifica se a venda não foi cancelada
 
             // Escreve as mensagens no buffer
             buffer << "Venda finalizada com sucesso!\n"
@@ -121,8 +121,10 @@ void Venda::finalizarVenda(Cliente& cliente, Funcionario* caixa, Estoque& estoqu
             caixa_pcd->falarTexto(nomeArquivo); // chama TTS
         }
         
-        std::cin.ignore(); // Aguarda o usuário pressionar Enter
-
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin.get();
+        
     } else {
         std::cerr << "Funcionário fornecido não é um Caixa.\n";
     }

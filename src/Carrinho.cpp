@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <stdexcept>
+#include <thread>
 
 // construtor
 Carrinho::Carrinho(Cliente& cliente, Funcionario* caixa, Estoque& estoque) : cliente(cliente), caixa(caixa), estoque(estoque){}
@@ -21,226 +22,219 @@ void Carrinho::setValorTotal(double valor_total){   this->valor_total = valor_to
 void Carrinho::setQuantidadeProduto(int quantidade_produto){    this->quantidade_produto = quantidade_produto; }
 
 // gerencia o carrinho durante a compra
-void Carrinho::realizarCompra(){
-    // armazena nome do lote(produto)
-    std::string nome_produto;
+void Carrinho::gerenciarCarrinho(Estoque& estoque) {
+    int opcao = -1;
+    while (opcao != 0) {
+        Tela::limpar();
+        std::cout << "=============================================" << std::endl;
+        std::cout << "                    CARRINHO                 " << std::endl;
+        std::cout << "=============================================" << std::endl;
+        std::cout << "1. Adicionar Produto\n";
+        std::cout << "2. Remover Produto\n";
+        std::cout << "3. Finalizar Compra\n";
+        std::cout << "0. Cancelar Compra\n";
+        std::cout << "Escolha uma opcao: ";
+        std::cin >> opcao;
 
-    // guarda o valor total do carrinho
-    setValorTotal(0);
+        if (std::cin.fail()) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Entrada inválida. Tente novamente.\n";
+            continue;
+        }
 
-    while(true){
-        // guarda a quantidade de produtos de um tipo
-        setQuantidadeProduto(0);
+        try {
+            switch (opcao) {
+                case 1: {
+                    std::string nomeProduto;
+                    std::cout << "Digite o nome do produto: ";
+                    std::cin.ignore();
+                    std::getline(std::cin, nomeProduto);
+                    std::cout << "Digite a quantidade: ";
+                    std::cin >> quantidade_produto;
 
-        Lote* lote;     // recebe o lote dos produtos do carrinho
+                    if (std::cin.fail() || quantidade_produto <= 0) {
+                        throw std::invalid_argument("Quantidade inválida.");
+                    }
 
-        std::pair<Lote*, int> parLote;  // Cria um par com o lote e a quantidade desejada
+                    std::vector<std::pair<Lote *, int>> lotesDisponiveis = estoque.buscarTodosLotesPorNome(nomeProduto); // Retorna todos os lotes disponíveis
+                    if (!lotesDisponiveis.empty()) {
+                        adicionarProdutoAoCarrinho(nomeProduto, quantidade_produto, lotesDisponiveis);
+                    } else {
+                        std::cout << "Estoque insuficiente para " << nomeProduto << ".\n";
+                    }
+                    break;
+                }
 
-        int escolha; // entrada do usuário
+                case 2: {
+                    std::string nomeProduto;
+                    int quantidade;
+                    std::cout << "Digite o nome do produto a ser removido: ";
+                    std::cin.ignore();
+                    std::getline(std::cin, nomeProduto);
+                    std::cout << "Digite a quantidade: ";
+                    std::cin >> quantidade;
+
+                    if (std::cin.fail() || quantidade <= 0) {
+                        throw std::invalid_argument("Quantidade invalida.");
+                    }
+
+                    if (removerProdutoDoCarrinho(nomeProduto, quantidade, estoque)) {
+                        std::cout << quantidade << " unidades do produto " << nomeProduto << " removidas do carrinho.\n";
+                    } else {
+                        std::cout << "Não foi possível remover o produto " << nomeProduto << ".\n";
+                    }
+                    break;
+                }
+
+                case 3: {
+                    // finalizarCompra(estoque);
+                    return;
+                }
+
+                case 0: {
+                    cancelarCompra(estoque);
+                    return;
+                }
+
+                default:
+                    std::cout << "Opcao invalida. Tente novamente.\n";
+            }
+        } catch (const std::exception& e) {
+            std::cout << "Erro: " << e.what() << "\n";
+        }
 
         Tela::limpar(); // limpa tela
 
-        std::cout << "=============================================\n";
-        std::cout << "                    CARRINHO               \n";
-        std::cout << "=============================================\n";
-        std::cout << " 1. Adicionar Produto                       \n";
-        std::cout << " 2. Remover Produto                        \n";
-        std::cout << " 3. Finalizar Compra                       \n";
-        std::cout << " 0. Cancelar Compra                        \n";
-        std::cout << "=============================================\n";
-        std::cout << "Escolha uma opcao: ";
+        // Exibe o carrinho atualizado
+        std::cout << "===================================================================================" << std::endl;
+        std::cout << "                                CARRINHO             " << std::endl;
+        std::cout << "===================================================================================" << std::endl;
+        std::cout << "Quantidade  Produto                            Preço Unitário  Preço Total\n";
 
-        // abre as opções de acessibilidade para PCD
-        if(caixa->getCargo() == "caixapcd"){
-            CaixaPcd* caixa_pcd = dynamic_cast<CaixaPcd*>(caixa);
+        
+        // Exibe os produtos agrupados
+        double subtotal = 0;  // Subtotal acumulado
+        for (const auto& [nome, detalhes] : resumoCarrinho) {
+            int quantidade = detalhes.first;
+            double precoUnitario = detalhes.second;
+            double precoTotal = quantidade * precoUnitario;
 
-            std::string nomeArquivo = "features/accessibility/carrinho_opcao.txt";
-            caixa_pcd->falarTexto(nomeArquivo); // chama TTS
+            std::cout << std::setw(10) << std::left << quantidade << "  "
+                    << std::setw(35) << std::left << nome
+                    << std::setw(16) << std::fixed << std::setprecision(2) << precoUnitario
+                    << std::setw(16) << precoTotal << std::endl;
+
+            subtotal += precoTotal;  // Soma ao subtotal
+            setValorTotal(subtotal); // guarda valor total
         }
 
-        std::cin >> escolha;    // recebe a opção
+        std::cout << "-----------------------------------------------------------------------------------" << std::endl;
+        std::cout << "Subtotal acumulado: R$" << std::fixed << std::setprecision(2) << subtotal << std::endl;
+        std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 
-        std::cin.ignore(); // limpa o buffer 
-        try{
-            switch (escolha)
-            {
-            case 1: // adiciona produto ao carrinho
-
-                // procura os produtos no estoque
-                std::cout << "Insira o nome do produto: ";
-                std::getline(std::cin, nome_produto);
-                
-                // busca produto no estoque
-                lote = getEstoque().buscarProdutoPorNome(nome_produto);
-
-                if(lote->getTamanho() <= 0){
-                    throw std::runtime_error("Lote vazio.");
-                }
-
-                if(lote == nullptr){
-                    throw std::invalid_argument("Produto não encontrado.");
-                }
-                if(lote->verificarValidade()){
-                    throw std::runtime_error("Produtos deste lote estão fora da validade.");
-                }
-
-                // confirma a quantidade de produtos a ser adicionada no carrinho
-                std::cout << "Adicionar qual quantidade de " << lote->getNome() << " no carrinho? ";
-                std::cin >> quantidade_produto;
-
-                // trata erro de entrada
-                if (std::cin.fail() || quantidade_produto < 0) {
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    throw std::invalid_argument("Entrada inválida. Insira um número válido.");
-                }
-
-                std::cin.ignore(); // limpa o buffer para a proxima entrada
-
-                // guarda o lote no par
-                parLote = std::make_pair(lote, quantidade_produto);
-
-                // Adiciona o par ao vetor de pares
-                paresLote.push_back(parLote);
-
-                // adiciona produtos no carrinho
-                for(int i=0; i<quantidade_produto; i++){
-                    produto_carrinho.push_back(lote->pesquisarProduto(i));
-                }
-
-                // calcula o valor parcial do carrinho
-                valor_total += lote->getProdutosPreco()*quantidade_produto;
-
-                // Limpa o map para evitar acúmulo
-                resumoCarrinho.clear();
-
-                // Agrupa os produtos por nome e soma quantidades
-                for (const auto& produto : produto_carrinho) {
-                    if (resumoCarrinho.find(produto.getNome()) == resumoCarrinho.end()) {
-                        resumoCarrinho[produto.getNome()] = {1, produto.getPreco()};  // Adiciona o produto
-                    } else {
-                        resumoCarrinho[produto.getNome()].first++;  // Incrementa a quantidade
-                    }
-                }   
-
-                break; // fim de adicionar produto
-            
-            case 2: // removeprodutos do carrinho
-
-                // procura o produto no carrinho
-                std::cout << "Nome do produto que deseja remover: ";
-                std::getline(std::cin, nome_produto);
-
-                // confirma a quantidade de produtos a ser removida no carrinho
-                std::cout << "remover qual quantidade de " << nome_produto << " no carrinho? ";
-                std::cin >> quantidade_produto;
-
-                // trata erro de entrada
-                if (std::cin.fail() || quantidade_produto < 0) {
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    throw std::invalid_argument("Entrada inválida. Insira um número válido.");
-                }
-
-                std::cin.ignore(); // limpa o buffer para a proxima entrada
-
-                // remove a quantidade de produto especificada
-                removerProdutoCarrinho(nome_produto, quantidade_produto);
-
-                for (auto& par : paresLote) {
-                    if (par.first == lote) {  // Verifica se o lote é o mesmo
-                        par.second -= quantidade_produto;  // Atualiza a quantidade
-                    }
-                }
-                break; // fim de remover produto
-            
-            case 3: // finalizar compra
-
-                for (const auto& par : paresLote) {
-                    Lote* lote = par.first; // Ponteiro para o lote
-                    int quantidade = par.second; // Quantidade retirada
-                    lote->removerProdutos(quantidade); // Remove permanentemente do lote
-                }
-
-                return; // termina compra 
-
-            case 0: // cancelar compra
-
-                // Limpa o mapa carrinho
-                resumoCarrinho.clear();
-
-                return;
-            }
-
-            // continua execução do carrinho após adicionar ou remover produtos
-
-            Tela::limpar(); // limpa tela
-
-            // Imprime o carrinho atualizado com agrupamento por nome de produto
-            std::cout << "--------------------------------------------------------------------------\n";
-            std::cout << "Quantidade  Produto                            Preço Unitário  Preço Total\n";
-
-            
-            // Exibe os produtos agrupados
-            double subtotal = 0;  // Subtotal acumulado
-            for (const auto& [nome, detalhes] : resumoCarrinho) {
-                int quantidade = detalhes.first;
-                double precoUnitario = detalhes.second;
-                double precoTotal = quantidade * precoUnitario;
-
-                std::cout << std::setw(10) << std::left << quantidade << "  "
-                        << std::setw(35) << std::left << nome
-                        << std::setw(16) << std::fixed << std::setprecision(2) << precoUnitario
-                        << std::setw(16) << precoTotal << std::endl;
-
-                subtotal += precoTotal;  // Soma ao subtotal
-                setValorTotal(subtotal); // guarda valor total
-            }
-
-            std::cout << "--------------------------------------------------------------------------\n";
-            std::cout << "Subtotal acumulado: R$" << std::fixed << std::setprecision(2) << subtotal << std::endl;
-            std::cout << "--------------------------------------------------------------------------\n";
-
-        }catch(std::exception& e){
-                std::cerr << "Erro: " << e.what() << std::endl;
-            }
-
-    }     
+        // Aguarda o usuário pressionar Enter
+        std::cout << "Pressione Enter para continuar...";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin.get();
+    }
 }
 
-// remover produto do carrinho de compras
-void Carrinho::removerProdutoCarrinho(const std::string& nomeProduto, int quantidadeRemover) {
-    // Verifica se o produto existe no resumoCarrinho
-    auto it = resumoCarrinho.find(nomeProduto);
-    if (it != resumoCarrinho.end()) {
-        // Decrementa a quantidade, mas não deixe a quantidade abaixo de 0
-        if (it->second.first >= quantidadeRemover) {
-            it->second.first -= quantidadeRemover;
+void Carrinho::adicionarProdutoAoCarrinho(const std::string& nomeProduto, int quantidade, const std::vector<std::pair<Lote*, int>>& lotesDisponiveis) {
+    int quantidadeRestante = quantidade; // Quantidade que ainda precisa ser adicionada
 
-            // Se a quantidade chegar a 0, remove o produto
-            if (it->second.first == 0) {
-                resumoCarrinho.erase(it);
+    for (const auto& [lote, disponivel] : lotesDisponiveis) {
+        if (quantidadeRestante <= 0) break; // Já adicionou tudo o que foi solicitado
+
+        // Calcula a quantidade que pode ser retirada deste lote
+        int quantidadeAdicionar = std::min(quantidadeRestante, disponivel);
+
+        // Adiciona os produtos ao carrinho
+        for (int i = 0; i < quantidadeAdicionar; ++i) {
+            produto_carrinho.emplace_back(lote->pesquisarProduto(i));
+        }
+
+        // Atualiza o resumo do carrinho
+        resumoCarrinho[nomeProduto].first += quantidadeAdicionar;
+        resumoCarrinho[nomeProduto].second = lote->getProdutosPreco();
+
+        // Atualiza o vetor de pares de lotes
+        bool loteExistente = false;
+        for (auto& par : paresLote) {
+            if (par.first == lote) {
+                par.second += quantidadeAdicionar;
+                loteExistente = true;
+                break;
             }
-        } else {
-            std::cout << "quantidade insuficiente para remover.\n";
+        }
+        if (!loteExistente) {
+            paresLote.emplace_back(lote, quantidadeAdicionar);
         }
 
-        // Atualiza o vetor produto_carrinho, removendo as instâncias do produto
-        int quantidadeRemanescente = quantidadeRemover;
-        for (auto itVec = produto_carrinho.begin(); itVec != produto_carrinho.end() && quantidadeRemanescente > 0; ) {
-            if (itVec->getNome() == nomeProduto) {
-                itVec = produto_carrinho.erase(itVec);
-                quantidadeRemanescente--;  // Decrementa a quantidade removida
-            } else {
-                ++itVec;
-            }
-        }
+        // Remove os produtos do lote
+        lote->removerProdutos(quantidadeAdicionar);
 
-        if (quantidadeRemanescente > 0) {
-            std::cout << "Nao foi possivel remover a quantidade total solicitada. Restam " 
-                      << quantidadeRemanescente << " itens a serem removidos.\n";
-        }
-    } else {
-        std::cout << "Produto não encontrado.\n";
+        // Atualiza a quantidade restante a ser adicionada
+        quantidadeRestante -= quantidadeAdicionar;
     }
+
+    if (quantidadeRestante > 0) {
+        std::cout << "Estoque insuficiente. Apenas " << (quantidade - quantidadeRestante)
+                  << " unidades do produto " << nomeProduto << " foram adicionadas ao carrinho.\n";
+    } else {
+        std::cout << "Todas as " << quantidade << " unidades do produto " << nomeProduto
+                  << " foram adicionadas ao carrinho.\n";
+    }
+
+    std::this_thread::sleep_for(std::chrono::seconds(2)); // espera 2 segundos
+}
+
+// remove produto do carrinho
+bool Carrinho::removerProdutoDoCarrinho(const std::string& nomeProduto, int quantidade, Estoque& estoque) {
+    if (resumoCarrinho.find(nomeProduto) == resumoCarrinho.end() || resumoCarrinho[nomeProduto].first < quantidade) {
+        return false; // Produto não está no carrinho ou quantidade insuficiente
+    }
+
+    resumoCarrinho[nomeProduto].first -= quantidade;
+
+    // Itera sobre os pares de lote para devolver os produtos ao estoque
+    for (auto it = paresLote.begin(); it != paresLote.end();) {
+        if (it->first->getNome() == nomeProduto) {
+            int qtdRestaurar = std::min(it->second, quantidade);
+            it->first->adicionarProduto(qtdRestaurar);
+            quantidade -= qtdRestaurar;
+
+            // Remove o par do vetor se a quantidade for restaurada completamente
+            if (qtdRestaurar == it->second) {
+                it = paresLote.erase(it);
+            } else {
+                it->second -= qtdRestaurar;
+                ++it;
+            }
+
+            if (quantidade <= 0) break;
+        } else {
+            ++it;
+        }
+    }
+
+    return true;
+}
+
+void Carrinho::finalizarCompra(Estoque& estoque) {
+    for (const auto& par : paresLote) {
+        par.first->removerProdutos(par.second); // Remove os produtos do lote
+    }
+}
+
+void Carrinho::cancelarCompra(Estoque& estoque) {
+    for (const auto& par : paresLote) {
+        par.first->adicionarProduto(par.second); // Restaura os produtos ao lote
+    }
+
+    // Limpa os dados do carrinho após o cancelamento
+    produto_carrinho.clear();
+    resumoCarrinho.clear();
+    paresLote.clear();
 }

@@ -35,12 +35,15 @@ public:
     void setQuantidadeProduto(int quantidade_produto);
 
     // gerencia o carrinho durante a compra
-    void realizarCompra();
+    void gerenciarCarrinho(Estoque& estoque);
 
-    // remove um produto do carrinho
-    void removerProdutoCarrinho(const std::string& nomeProduto, int quantidadeRemover);
+    void adicionarProdutoAoCarrinho(const std::string& nomeProduto, int quantidade, const std::vector<std::pair<Lote*, int>>& lotes);
 
-    
+    bool removerProdutoDoCarrinho(const std::string& nomeProduto, int quantidade, Estoque& estoque);
+
+    void finalizarCompra(Estoque& estoque);
+
+    void cancelarCompra(Estoque& estoque);
 };
 
 #endif

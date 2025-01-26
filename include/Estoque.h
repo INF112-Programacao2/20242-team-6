@@ -21,7 +21,7 @@ public:
     void gerenciarEstoque(Funcionario* gerente, Estoque& estoque);
 
     // busca o produto(lote) por nome
-    Lote* buscarProdutoPorNome(const std::string& nome);
+    std::vector<std::pair<Lote*, int>> buscarTodosLotesPorNome(const std::string& nomeProduto);
     
     // adiciona um lote ao estoque (gerente tem permissão)
     void adicionarLote(Funcionario* gerente, std::unique_ptr<Lote> lote);

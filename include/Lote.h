@@ -37,6 +37,9 @@ public:
     // Adiciona uma quantidade de produtos ao lote (sobrecarga)
     void adicionarProduto(const Produto& produto, int quantidade);
 
+    // Método otimizado para adicionar apenas a quantidade de produtos
+    void adicionarProduto(int quantidade);
+
     // Método para remover uma quantidade de produtos do lote
     void removerProdutos(int quantidade);
 

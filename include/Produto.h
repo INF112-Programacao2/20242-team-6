@@ -16,6 +16,8 @@ public:
     // Construtor
     Produto(const std::string& nome, const int& id, double preco, const std::string& descricao);
 
+    Produto (const std::string& nome, double preco);
+
     // Métodos getters
     std::string getNome() const;
     int getId() const;

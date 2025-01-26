@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <thread>
+#include <algorithm>
 
 // construtor inicializa o banco de dados com alguns funcionários
 Estoque::Estoque() {
@@ -136,13 +137,21 @@ void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque) {
 
 
 // busca o produto(lote) por nome
-Lote* Estoque::buscarProdutoPorNome(const std::string& nome){
-    for(const auto&[codigo, lote] : estoque){
-        if(lote->getNome() == nome){
-            return lote.get();
+std::vector<std::pair<Lote*, int>> Estoque::buscarTodosLotesPorNome(const std::string& nomeProduto) {
+    std::vector<std::pair<Lote*, int>> lotesDisponiveis;
+
+    for (auto& [codigo, lote] : estoque) {
+        if (lote->getNome() == nomeProduto && lote->getTamanho() > 0) {
+            lotesDisponiveis.emplace_back(lote.get(), lote->getTamanho());
         }
     }
-    return nullptr; // Não encontrado
+
+    // Ordena os lotes pela data de validade (mais próximo primeiro)
+    std::sort(lotesDisponiveis.begin(), lotesDisponiveis.end(), [](const auto& a, const auto& b) {
+        return a.first->getValidade() < b.first->getValidade();
+    });
+
+    return lotesDisponiveis;
 }
 
 // adiciona um lote ao estoque (gerente tem permissão)
