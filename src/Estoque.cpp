@@ -17,135 +17,141 @@ Estoque::Estoque() {
     }
 }
 
-// gerencia o estoque (gerente tem permissão)
 void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque) {
     int escolha;
     do {
-        Tela::limpar(); // limpa tela
-
-        std::cout << "=============================================\n";
-        std::cout << "          GERENCIAMENTO DE ESTOQUE           \n";
-        std::cout << "=============================================\n";
-        std::cout << "1. Adicionar novo lote de um produto        \n";
-        std::cout << "2. Remover lote                             \n";
-        std::cout << "3. Exibir estoque                           \n";
-        std::cout << "0. Sair                                     \n";
-        std::cout << "=============================================\n";
-        std::cout << "Escolha uma opção: ";
-
-        std::cin >> escolha;
-
-        // Verifica falha na entrada
-        if (std::cin.fail()) {
-            std::cin.clear(); // Limpa flag de erro
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignora entrada inválida
-            std::cout << "Entrada inválida. Por favor, digite um número.\n"; // precisa do buffer
-            std::this_thread::sleep_for(std::chrono::seconds(2)); // Espera por 2 segundos
-            continue; // Volta ao início do loop
-        }
-
-        if (escolha == 1) {
-            // Adicionar novo lote
-            std::string nome, codigo, data_validade, descricao;
-            int tamanho;
-            double preco;
-            size_t limite_nome = 70;    // guarda tamanho máximo do nome do produto
-            size_t limite_descricao = 100; // guarda tamanho máximo da descrição
-
+        try {
             Tela::limpar(); // limpa tela
 
-            try {
-                std::cout << "Nome: ";
-                std::cin.ignore(); // Limpa buffer
-                std::getline(std::cin, nome);
+            std::cout << "=============================================\n";
+            std::cout << "          GERENCIAMENTO DE ESTOQUE           \n";
+            std::cout << "=============================================\n";
+            std::cout << "1. Adicionar novo lote de um produto        \n";
+            std::cout << "2. Remover lote                             \n";
+            std::cout << "3. Exibir estoque                           \n";
+            std::cout << "4. Alterar preço de um produto              \n";
+            std::cout << "0. Sair                                     \n";
+            std::cout << "=============================================\n";
+            std::cout << "Escolha uma opção: ";
+            std::cin >> escolha;
 
-                if (nome.size() > limite_nome) { // garante que o tamanho do nome seja controlado
-                    throw std::out_of_range("Nome do produto deve ter no máximo " + std::to_string(limite_nome) + " caracteres\n");
-                    std::this_thread::sleep_for(std::chrono::seconds(2)); // Espera por 2 segundos
-                }
-
-                std::cout << "Codigo do lote: ";
-                std::cin >> codigo;
-
-                std::cout << "Data de validade (dd/mm/aaaa): ";
-                std::cin >> data_validade;
-
-                std::cout << "Quantidade: ";
-                std::cin >> tamanho;
-
-                if (std::cin.fail()) {
-                    throw std::invalid_argument("Entrada inválida para quantidade.");
-                }
-
-                if (tamanho <= 0) { // garante tamanho válido
-                    throw std::invalid_argument("Quantidade de produtos deve ser maior que zero.");
-                }
-
-                std::cout << "Preço da unidade: ";
-                std::cin >> preco;
-
-                if (std::cin.fail()) {
-                    throw std::invalid_argument("Entrada inválida para preço.");
-                }
-
-                if (preco <= 0.0) { // garante preço válido
-                    throw std::invalid_argument("Preço dos produtos deve ser maior que zero.");
-                }
-
-                std::cout << "Descrição: ";
-                std::cin.ignore(); // Limpa buffer
-                std::getline(std::cin, descricao);
-
-                if (descricao.size() > limite_descricao) { // garante que o tamanho da descrição seja controlado
-                    throw std::out_of_range("Descrição do produto deve ter no máximo " + std::to_string(limite_descricao) + " caracteres\n");
-                }
-
-                // cria um lote temporário no heap para armazenar no estoque.
-                std::unique_ptr<Lote> lote = std::make_unique<Lote>(nome, codigo, data_validade, tamanho);
-
-                for (int i = 0; i < tamanho; i++) {
-                    lote->preencherLote(nome, i + 1, preco, descricao); // preenche o lote com os produtos
-                }
-
-                if (lote->verificarValidade()) { // garante produto dentro da validade
-                    throw std::runtime_error("Lote com produtos fora da validade.");
-                }
-
-                estoque.adicionarLote(gerente, std::move(lote));    // adiciona lote no estoque
-                salvarEstoqueNoArquivo("data/estoque.txt"); // salva o lote no arquivo texto
-
-            } catch (const std::exception& e) {
-                std::cerr << "Erro: " << e.what() << "\n";
+            if (std::cin.fail()) {
+                std::cin.clear(); // limpa a flag de erro
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // descarta entrada inválida
+                throw std::invalid_argument("Entrada inválida. Por favor, digite um número.");
             }
 
-        } else if (escolha == 2) {
-            // Remover lote
-            std::string codigo;
-            std::cout << "Codigo do lote a ser removido: ";
-            std::cin >> codigo;
+            switch (escolha) {
+                case 1: {
+                    std::string nome, data_validade, descricao;
+                    int tamanho;
+                    double preco;
+                    const size_t limite_nome = 70;
+                    const size_t limite_descricao = 100;
 
-            // tratar excessão
+                    Tela::limpar();
+                    std::cout << "=============================================\n";
+                    std::cout << "              ADICIONANDO PRODUTO           \n";
+                    std::cout << "=============================================\n";
+                    std::cout << "Nome: ";
+                    std::cin.ignore();
+                    std::getline(std::cin, nome);
 
-            try {
-                estoque.removerLote(gerente, codigo);
-                salvarEstoqueNoArquivo("data/estoque.txt"); // salva o lote no arquivo texto
-            } catch (const std::exception& e) {
-                std::cerr << "Erro: " << e.what() << "\n";
+                    if (nome.size() > limite_nome) {
+                        throw std::out_of_range("O nome do produto deve ter no máximo " + std::to_string(limite_nome) + " caracteres.");
+                    }
+
+                    std::string codigo = gerarCodigoLote(); // Gera o código automaticamente
+
+                    std::cout << "Data de validade (dd/mm/aaaa): ";
+                    std::cin >> data_validade;
+                    std::cout << "Quantidade: ";
+                    std::cin >> tamanho;
+
+                    if (std::cin.fail() || tamanho <= 0) {
+                        throw std::invalid_argument("Quantidade inválida.");
+                    }
+                    
+                    preco = estoque.gerarPrecoLote(nome); // configura o preço do produto
+
+                    std::cout << "Descrição: ";
+                    std::cin.ignore();
+                    std::getline(std::cin, descricao);
+
+                    if (descricao.size() > limite_descricao) {
+                        throw std::out_of_range("A descrição deve ter no máximo " + std::to_string(limite_descricao) + " caracteres.");
+                    }
+
+                    // cria um lote temporário no heap para armazenar no estoque.
+                    std::unique_ptr<Lote> lote = std::make_unique<Lote>(nome, codigo, data_validade, tamanho);
+                    for (int i = 0; i < tamanho; i++) {
+                        lote->preencherLote(nome, i + 1, preco, descricao);
+                    }
+
+                    if (lote->isExpired()) {
+                        throw std::runtime_error("O lote contém produtos fora da validade.");
+                    }
+
+                    estoque.adicionarLote(gerente, std::move(lote)); // adiciona lote no estoque
+                    estoque.salvarEstoqueNoArquivo("data/estoque.txt"); // salva o lote no arquivo texto
+                    break;
+                }
+
+                case 2: {
+                    std::string codigo;
+                    std::cout << "Código do lote a ser removido: ";
+                    std::cin >> codigo;
+
+                    estoque.removerLote(gerente, codigo);  // remove lote do estoque
+                    estoque.salvarEstoqueNoArquivo("data/estoque.txt"); // salva o lote no arquivo texto
+                    break;
+                }
+
+                case 3:
+                    exibirEstoque();    // exibe estoque na tela
+                    break;
+
+                case 4: {   // altera preço do produto
+                    std::string nomeProduto;
+                    Tela::limpar(); 
+                    std::cout << "=============================================\n";
+                    std::cout << "                ALTERANDO PREÇO           \n";
+                    std::cout << "=============================================\n";
+                    std::cout << "Nome do produto para alterar o preço: ";
+                    std::cin.ignore();
+                    std::getline(std::cin, nomeProduto);
+
+                    alterarPreco(nomeProduto);  
+                    estoque.salvarEstoqueNoArquivo("data/estoque.txt");
+                    break;
+                }
+
+                case 0:
+                    break;
+
+                default:
+                    throw std::invalid_argument("Opção inválida. Escolha um número entre 0 e 4.");
             }
-        } else if (escolha ==3){
-            // exibe estoque na tela
-            exibirEstoque();
 
+        } catch (const std::exception& e) {
+            std::cerr << "Erro: " << e.what() << "\n";
+            std::cin.clear();
+            std::this_thread::sleep_for(std::chrono::milliseconds(1500));
         }
     } while (escolha != 0);
 }
+
 
 
 // busca o produto(lote) por nome
 std::vector<std::pair<Lote*, int>> Estoque::buscarTodosLotesPorNome(const std::string& nomeProduto) {
     std::vector<std::pair<Lote*, int>> lotesDisponiveis;
 
-    for (auto& [codigo, lote] : estoque) {      // itera sobre todos os lotes no estoque
+    for (auto& [codigo, lote] : estoque_lotes) {      // itera sobre todos os lotes no estoque
+        if(lote->getNome() == nomeProduto && lote->isExpired()){
+            throw std::runtime_error("Produtos do lote " + lote->getCodigo() + " estão vencidos.");
+        }
+
         if (lote->getNome() == nomeProduto && lote->getTamanho() > 0) {    // verifica nome e se esta vazio
             lotesDisponiveis.emplace_back(lote.get(), lote->getTamanho());  // adiciona ao par Lote*, tamanho
         }
@@ -166,11 +172,11 @@ void Estoque::adicionarLote(Funcionario* gerente, std::unique_ptr<Lote> lote){
     }
 
     const std::string& codigo = lote->getCodigo();
-    if (estoque.find(codigo) != estoque.end()) {
+    if (estoque_lotes.find(codigo) != estoque_lotes.end()) {
         throw std::runtime_error("Ja existe um lote com este codigo.");
     }
 
-    estoque[codigo] = std::move(lote);
+    estoque_lotes[codigo] = std::move(lote);
     std::cout << "Lote adicionado com sucesso!\n";
 }
 
@@ -180,12 +186,12 @@ void Estoque::removerLote(Funcionario* gerente, const std::string& codigo){
         throw std::runtime_error("Apenas gerentes podem remover funcionários.");
     }
 
-    auto it = estoque.find(codigo);
-    if(it == estoque.end()){
+    auto it = estoque_lotes.find(codigo);
+    if(it == estoque_lotes.end()){
         throw std::runtime_error("Lote não existe");
     }
 
-    estoque.erase(it);
+    estoque_lotes.erase(it);
     std::cout << "Lote removido.\n";
 }
 
@@ -196,7 +202,7 @@ void Estoque::salvarEstoqueNoArquivo(const std::string& nomeArquivo) const{
         throw std::runtime_error("Erro ao abrir o arquivo para salvar Estoque.");
     }
 
-    for (const auto& [codigo, lote] : estoque) { // percorre o Estoque e salva lote e produtos
+    for (const auto& [codigo, lote] : estoque_lotes) { // percorre o Estoque e salva lote e produtos
         
         if(lote->getTamanho() > 0){
             arquivo << lote->getNome() << ","
@@ -223,7 +229,7 @@ void Estoque::carregarEstoqueDoArquivo(const std::string& nomeArquivo){
         throw std::runtime_error("Erro ao abrir o arquivo para carregar estoque.");
     }
 
-    estoque.clear(); // limpa o estoque
+    estoque_lotes.clear(); // limpa o estoque
 
     std::string linha;
     while (std::getline(arquivo, linha)) {
@@ -247,7 +253,7 @@ void Estoque::carregarEstoqueDoArquivo(const std::string& nomeArquivo){
 
             // Adiciona o lote ao estoque
             std::unique_ptr<Lote> lote = std::make_unique<Lote>(nome, codigo, validade, tamanho);
-            estoque[codigo] = std::move(lote);
+            estoque_lotes[codigo] = std::move(lote);
 
             for (int i = 0; i < tamanho; i++) {
                 if (!std::getline(arquivo, linha)) {
@@ -271,7 +277,7 @@ void Estoque::carregarEstoqueDoArquivo(const std::string& nomeArquivo){
 
                 // Adiciona os produtos no lote
                 Produto produto(nome, id, preco, descricao);
-                estoque[codigo]->adicionarProduto(produto);
+                estoque_lotes[codigo]->adicionarProduto(produto);
 
             }
 
@@ -314,4 +320,76 @@ void Estoque::exibirEstoque(){
     if (resultado != 0) {
         throw std::runtime_error("Erro ao abrir o editor de texto padrão.");
     }
+}
+
+// alterar preço de um produto
+void Estoque::alterarPreco(const std::string nome_produto){
+    auto lotes = buscarTodosLotesPorNome(nome_produto);
+
+    if(lotes.empty()){
+        throw std::invalid_argument("Produto não encontrado");
+    }
+    
+    std::cout << "Preço atual de " << lotes[0].first->getNome() 
+    << ": R$ " << lotes[0].first->getProdutosPreco() 
+    << "\nInsira novo preço: ";
+
+    double novoPreco;
+    std::cin >> novoPreco; // recebe novo preço do gerente
+
+    if(novoPreco <= 0.0){
+        throw std::invalid_argument("Novo preço inválido.");
+    }
+
+    for(auto& lote : lotes){
+        lote.first->setProdutoPreco(novoPreco); // altera o preço dos produtos
+    }
+}
+
+// gera código para os lotes
+std::string Estoque::gerarCodigoLote() {
+    int maiorNumero = 0;
+
+    // Percorre o mapa para encontrar o maior número de lote
+    for (const auto& [codigo, lote] : estoque_lotes) {
+        if (codigo.size() > 1 && codigo[0] == 'L' && isdigit(codigo[1])) {
+            try {
+                // Extrai a parte numérica do código
+                int numero = std::stoi(codigo.substr(1));
+                if (numero > maiorNumero) {
+                    maiorNumero = numero;
+                }
+            } catch (const std::exception& e) {
+                // Ignora erros de conversão (códigos inválidos, etc.)
+                continue;
+            }
+        }
+    }
+
+    // Incrementa para gerar o próximo código
+    maiorNumero++;
+    return "L" + std::to_string(maiorNumero);
+}
+
+// garante que produtos iguais de lote diferente tenham o mesmo preço
+double Estoque::gerarPrecoLote(const std::string& nome){
+    
+    double preco = 0.0;
+    // percorre o estoque para achar produto com msm nome
+    for (const auto& lote : estoque_lotes) {
+        if(lote.second->getNome() == nome){
+            preco = lote.second->getProdutosPreco();
+        }
+    }
+    // se for produto novo pede entrada ao usuário
+    if(preco <= 0.0){
+        std::cout << "Preço da unidade: ";
+        std::cin >> preco;
+    }
+
+    if (std::cin.fail() || preco <= 0.0) {
+        throw std::invalid_argument("Preço inválido.");
+    }
+
+    return preco;
 }

@@ -22,9 +22,11 @@ public:
     // Métodos getters
     std::string getNome() const;
     int getId() const;
-    
     double getPreco() const;
     std::string getDescricao() const;
+
+    // Métodos setters
+    void setPreco(double novoPreco);
 
     // Calcula o preço com desconto aplicado
     double getPrecoComDesconto() const;    

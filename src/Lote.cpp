@@ -24,6 +24,13 @@ std::string Lote::getCodigo() const{ return codigo; }
 size_t Lote::getTamanho() const{ return produtos.size(); }
 std::string Lote::getValidade() const{ return dataValidadeStr; }
 
+ // Métodos setters
+void Lote::setProdutoPreco(double novoPreco){   // configura o preço dos produtos do lote
+    for(Produto& produto : produtos){
+        produto.setPreco(novoPreco);
+    }
+}
+
 // retorna o valor unitario de um produto do lote
 double Lote::getProdutosPreco() const{
     return produtos[0].getPreco();
@@ -86,7 +93,7 @@ void Lote::preencherLote(const std::string& nome, const int& id, double preco, c
 }
 
 // Método para verificar se o produto está vencido
-bool Lote::verificarValidade() const {
+bool Lote::isExpired() const {
     auto agora = std::chrono::system_clock::now();
     return agora > dataValidade;
 }

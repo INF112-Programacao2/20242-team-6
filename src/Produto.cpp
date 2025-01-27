@@ -8,16 +8,10 @@ Produto::Produto (const std::string& nome, const int& id, double preco, const st
 Produto::Produto (const std::string& nome, double preco) : nome(nome), preco(preco){}
 
 // Métodos getters
-std::string Produto::getNome() const{
-    return nome;
-}
-int Produto::getId() const{
-    return id;
-}
+std::string Produto::getNome() const{    return nome;}
+int Produto::getId() const{    return id;}
+double Produto::getPreco() const{    return preco;}
+std::string Produto::getDescricao() const{    return descricao;}
 
-double Produto::getPreco() const{
-    return preco;
-}
-std::string Produto::getDescricao() const{
-    return descricao;
-}
+// Métodos setters
+void Produto::setPreco(double novoPreco){   this->preco = novoPreco;}

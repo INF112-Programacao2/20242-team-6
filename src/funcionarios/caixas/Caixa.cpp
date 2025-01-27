@@ -13,7 +13,7 @@ Funcionario(nome, id, cpf, email, senha), total_vendido(total_vendido){}
 void Caixa::registrarVenda(const std::string& cliente, const std::map<std::string, std::pair<int, double>>& resumoCarrinho, 
 double valorTotal, const std::string& dataHora) {
     vendas.push_back({cliente, resumoCarrinho, valorTotal, dataHora});
-    gerarRelatorio();
+    gerarRelatorio();   // gera relatório de vendas
 }
 
 // getters

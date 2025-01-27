@@ -1,3 +1,4 @@
-caixa,caixa teste,C-02,132.344.654-89,as,123,23.00
-caixapcd,df,P-01,13213,ca,xa,0.00
+gerente,nicolas,G-02,123.454.098-89,nicolas@gmail.com,1234
 gerente,teste,G-3,123,q,1
+caixapcd,df,P-01,13213,ca,xa,0.00
+caixa,caixa teste,C-02,132.344.654-89,as,123,23.00

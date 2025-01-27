@@ -24,6 +24,9 @@ public:
     std::string getCodigo() const;
     size_t getTamanho() const;
     std::string getValidade() const;
+
+    // Métodos setters
+    void setProdutoPreco(double novoPreco);
     
     // retorna o valor unitario de um produto do lote
     double getProdutosPreco() const;
@@ -47,7 +50,7 @@ public:
     void preencherLote(const std::string& nome, const int& id, double preco, const std::string& descricao);
 
     // Método para verificar se o produto está vencido
-    bool verificarValidade() const;    
+    bool isExpired() const;    
 };
 
 #endif

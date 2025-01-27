@@ -61,6 +61,7 @@ void Venda::iniciarVenda(Funcionario* caixa, Estoque& estoque){
     finalizarVenda(cliente, caixa, estoque, carrinho);
 }
 
+// finaliza a venda, gera a nota fiscal, e o relatório do caixa
 void Venda::finalizarVenda(Cliente& cliente, Funcionario* caixa, Estoque& estoque, Carrinho& carrinho){
     // Garante que o Funcionario é um Caixa
     Caixa* novo_caixa = dynamic_cast<Caixa*>(caixa);
@@ -99,8 +100,8 @@ void Venda::finalizarVenda(Cliente& cliente, Funcionario* caixa, Estoque& estoqu
 
             // Escreve as mensagens no buffer
             buffer << "Venda finalizada com sucesso!\n"
-                << "Cliente: " << cliente.getNome() << "\n"
-                << "Total da compra: R$" << std::fixed << std::setprecision(2) << carrinho.getValorTotal() << "\n"
+                << "Cliente: " << cliente.getNome() << ".\n"
+                << "Total da compra: " << std::fixed << std::setprecision(2) << carrinho.getValorTotal() << " reais.\n"
                 << "Pressione Enter para continuar...\n";
         }else{
 

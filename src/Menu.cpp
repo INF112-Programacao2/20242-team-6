@@ -14,7 +14,7 @@ void Menu::exibirMenuGerente(Funcionario* gerente, BancoFuncionario& banco, Esto
             try {
                 Tela::limpar(); // limpa tela
 
-                std::cout << "\n==================================================\n";
+                std::cout << "==================================================\n";
                 std::cout << "                   MENU DO GERENTE              \n";
                 std::cout << "==================================================\n";
                 std::cout << "1. Administrar Funcionários                  \n";
@@ -80,6 +80,7 @@ void Menu::exibirMenuCaixa(Funcionario* caixa, Estoque& estoque) {
                 std::cout << "==================================================\n";
                 std::cout << "1. Iniciar Venda                              \n";
                 std::cout << "2. Exibir Relatório de Vendas                 \n";
+                std::cout << "3. Exibir Estoque                             \n";
                 std::cout << "0. Sair                                       \n";
                 std::cout << "==================================================\n";
                 std::cout << "Escolha uma opção: ";
@@ -119,15 +120,29 @@ void Menu::exibirMenuCaixa(Funcionario* caixa, Estoque& estoque) {
         // Processa a escolha após validação
         try {
             switch (escolha) {
-                case 1:
+                case 1: // inicia venda
                     Venda novaVenda;
                     novaVenda.iniciarVenda(caixa, estoque);
                     break;
-                case 2:
+
+                case 2: // exibe o relatório do funcionaário
                     caixa->exibirRelatorio();
                     break;
-                case 0:
+
+                case 3: // exibe estoque
+                    estoque.exibirEstoque();
+
+                    // Ativa acessibilidade para PCD
+                    if (caixa->getCargo() == "caixapcd") {
+                        CaixaPcd* caixa_pcd = dynamic_cast<CaixaPcd*>(caixa);
+                        std::string nomeArquivo = "data/estoque.txt";
+                        caixa_pcd->falarTexto(nomeArquivo); // chama TTS
+                    }
                     break;
+
+                case 0: // sair
+                break;
+                
                 default:
                     throw std::invalid_argument("Opção inválida, tente novamente.");
             }

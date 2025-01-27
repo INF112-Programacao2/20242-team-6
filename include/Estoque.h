@@ -8,7 +8,7 @@
 
 class Estoque{
 private:
-    std::map<std::string, std::unique_ptr<Lote>> estoque;
+    std::map<std::string, std::unique_ptr<Lote>> estoque_lotes;
 public:
 
     // construtor
@@ -34,6 +34,15 @@ public:
 
     // exibe estoque na tela
     void exibirEstoque();
+
+    // alterar preço de um produto
+    void alterarPreco(const std::string nome_produto);
+
+    // gera código para os lotes
+    std::string gerarCodigoLote();
+
+    // garante que produtos iguais de lote diferente tenham o mesmo preço
+    double gerarPrecoLote(const std::string& nome);
 };
 
 #endif
