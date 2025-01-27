@@ -1,4 +1,2 @@
-Venda finalizada com sucesso!
-Cliente: Airton
-Total da compra: R$7.00
+Venda cancelada!
 Pressione Enter para continuar...

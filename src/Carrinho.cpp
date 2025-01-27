@@ -62,7 +62,7 @@ void Carrinho::gerenciarCarrinho(Estoque& estoque) {
                 // Limpa o estado de erro e descarta entradas inválidas
                 std::cin.clear(); 
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                std::this_thread::sleep_for(std::chrono::seconds(1)); // Espera antes de mostrar o menu novamente
+                std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // Espera antes de mostrar o menu novamente
             }
         }
         try {
@@ -163,7 +163,7 @@ void Carrinho::gerenciarCarrinho(Estoque& estoque) {
         } catch (const std::exception& e) {
             // Trata exceções
             std::cout << "Erro: " << e.what() << "\n";
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Pausa para exibir a mensagem
+            std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // Pausa para exibir a mensagem
         }       
     }while(opcao != 0);
 }

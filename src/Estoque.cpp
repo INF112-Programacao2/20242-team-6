@@ -28,6 +28,7 @@ void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque) {
         std::cout << "=============================================\n";
         std::cout << "1. Adicionar novo lote de um produto        \n";
         std::cout << "2. Remover lote                             \n";
+        std::cout << "3. Exibir estoque                           \n";
         std::cout << "0. Sair                                     \n";
         std::cout << "=============================================\n";
         std::cout << "Escolha uma opção: ";
@@ -131,6 +132,10 @@ void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque) {
             } catch (const std::exception& e) {
                 std::cerr << "Erro: " << e.what() << "\n";
             }
+        } else if (escolha ==3){
+            // exibe estoque na tela
+            exibirEstoque();
+
         }
     } while (escolha != 0);
 }
@@ -274,8 +279,39 @@ void Estoque::carregarEstoqueDoArquivo(const std::string& nomeArquivo){
             throw std::runtime_error("Falha ao processar arquivo");
         }
     }
-
     arquivo.close();
+}
 
+// exibe estoque na tela
+void Estoque::exibirEstoque(){
+    // pega o caminho do arquivo
+    std::string nomeArquivo = "data/estoque.txt";
 
+    // Verifica se o arquivo existe
+    std::ifstream arquivo(nomeArquivo);
+    if (!arquivo.is_open()) {
+        throw std::runtime_error("Falha ao tentar abrir arquivo estoque");
+    }
+    arquivo.close(); // Fecha o arquivo, pois só queremos verificar sua existência
+
+    // Abre o arquivo no editor de texto padrão
+    #if defined(_WIN32) || defined(_WIN64)
+        // Comando para Windows
+        std::string comando = "start \"\" \"" + nomeArquivo + "\"";
+    #elif defined(__linux__)
+        // Comando para Linux
+        std::string comando = "xdg-open \"" + nomeArquivo + "\"";
+    #elif defined(__APPLE__)
+        // Comando para macOS
+        std::string comando = "open \"" + nomeArquivo + "\"";
+    #else
+        throw std::runtime_error("Sistema operacional não suportado.");
+    #endif
+
+    int resultado = system(comando.c_str());
+
+    // Verifica se houve erro ao abrir o editor de texto
+    if (resultado != 0) {
+        throw std::runtime_error("Erro ao abrir o editor de texto padrão.");
+    }
 }

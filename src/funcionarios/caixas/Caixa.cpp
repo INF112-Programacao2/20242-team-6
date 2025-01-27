@@ -52,7 +52,7 @@ void Caixa::gerarRelatorio() const {
         arquivo << "==========================================================================\n";
         arquivo << "Nome: " << getNome() << std::endl;
         arquivo << "CPF: " << getCpf() << std::endl;
-        arquivo << "Cargo: " << getCargo() << std::endl;
+        arquivo << "Cargo: Caixa" << std::endl;
         arquivo << "--------------------------------------------------------------------------\n\n";
         
     }
@@ -82,8 +82,6 @@ void Caixa::gerarRelatorio() const {
         arquivo << "--------------------------------------------------------------------------\n";
     }
 
-    
-
     // Fecha o arquivo
     arquivo.close();
 }
@@ -102,18 +100,18 @@ void Caixa::exibirRelatorio() const {
     arquivo.close(); // Fecha o arquivo, pois só queremos verificar sua existência
 
     // Abre o arquivo no editor de texto padrão
-#if defined(_WIN32) || defined(_WIN64)
-    // Comando para Windows
-    std::string comando = "start \"\" \"" + nomeArquivo + "\"";
-#elif defined(__linux__)
-    // Comando para Linux
-    std::string comando = "xdg-open \"" + nomeArquivo + "\"";
-#elif defined(__APPLE__)
-    // Comando para macOS
-    std::string comando = "open \"" + nomeArquivo + "\"";
-#else
-    throw std::runtime_error("Sistema operacional não suportado.");
-#endif
+    #if defined(_WIN32) || defined(_WIN64)
+        // Comando para Windows
+        std::string comando = "start \"\" \"" + nomeArquivo + "\"";
+    #elif defined(__linux__)
+        // Comando para Linux
+        std::string comando = "xdg-open \"" + nomeArquivo + "\"";
+    #elif defined(__APPLE__)
+        // Comando para macOS
+        std::string comando = "open \"" + nomeArquivo + "\"";
+    #else
+        throw std::runtime_error("Sistema operacional não suportado.");
+    #endif
 
     int resultado = system(comando.c_str());
 

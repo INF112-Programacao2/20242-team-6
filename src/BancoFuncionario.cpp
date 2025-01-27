@@ -4,14 +4,16 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <thread>
 
 // construtor inicializa o banco de dados com alguns funcionários
 BancoFuncionario::BancoFuncionario() {
     try {
         carregarFuncionariosDoArquivo("data/funcionarios.txt");
     } catch (const std::exception& e) {
-        std::cerr << "Erro ao carregar funcionarios: " << e.what() << "\n";
-        std::cerr << "Iniciando com banco de dados vazio.\n";
+        std::cout << "Erro ao carregar funcionarios: " << e.what() << "\n";
+        std::cout << "Iniciando com banco de dados vazio.\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // aguarda exibição de msg erro
     }
 }
 
@@ -25,11 +27,11 @@ void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFunciona
         std::cout << "=============================================\n";
         std::cout << "          GERENCIAMENTO DE FUNCIONARIOS      \n";
         std::cout << "=============================================\n";
-        std::cout << "  1. Adicionar Funcionário                  \n";
-        std::cout << "  2. Remover Funcionário                    \n";
-        std::cout << "  3. Exibir Informação de um Funcionário    \n";
-        std::cout << "  4. Top Caixas com Mais Vendas             \n";
-        std::cout << "  0. Sair                                   \n";
+        std::cout << " 1. Adicionar Funcionário                  \n";
+        std::cout << " 2. Remover Funcionário                    \n";
+        std::cout << " 3. Exibir Informação de um Funcionário    \n";
+        std::cout << " 4. Top Caixas com Mais Vendas             \n";
+        std::cout << " 0. Sair                                   \n";
         std::cout << "=============================================\n";
         std::cout << "Escolha uma opção: ";
         std::cin >> escolha;
@@ -102,7 +104,8 @@ void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFunciona
                 salvarFuncionariosNoArquivo("data/funcionarios.txt");    // salva o lote no arquivo texto  
 
             } catch (const std::exception& e) {
-                std::cerr << "Erro: " << e.what() << "\n";
+                std::cout << "Erro: " << e.what() << "\n";
+                std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // aguarda exibição de msg de erro
             }
 
         } else if (escolha == 2) {
@@ -118,9 +121,11 @@ void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFunciona
             std::cin >> id;
 
             try {
-                banco.removerFuncionario(gerente, id);
+                banco.removerFuncionario(gerente, id);  // remove funcionário do banco
+                salvarFuncionariosNoArquivo("data/funcionarios.txt");    // salva o lote no arquivo texto 
             } catch (const std::exception& e) {
-                std::cerr << "Erro: " << e.what() << "\n";
+                std::cout << "Erro: " << e.what() << "\n";
+                std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // aguarda exibição de msg de erro
             }
         } else if(escolha == 3){
             // mostrar detalhes de um funcionario
@@ -148,6 +153,7 @@ void BancoFuncionario::adicionarFuncionario(Funcionario* gerente, std::unique_pt
 
     funcionarios[id] = std::move(novoFuncionario);
     std::cout << "Funcionário adicionado com sucesso.\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // aguarda exibição de msg
 }
 
 // Remove um funcionário do banco de dados
@@ -163,6 +169,7 @@ void BancoFuncionario::removerFuncionario(Funcionario* gerente, const std::strin
 
     funcionarios.erase(it);
     std::cout << "Funcionário removido com sucesso.\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // aguarda exibição de msg
 }
 
 // Retorna um ponteiro para o funcionário, se encontrado

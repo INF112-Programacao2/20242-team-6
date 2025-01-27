@@ -31,6 +31,9 @@ public:
 
     // carrega o estoque a partir de um arquivo txt (simula um banco de dados)
     void carregarEstoqueDoArquivo(const std::string& nomeArquivo);
+
+    // exibe estoque na tela
+    void exibirEstoque();
 };
 
 #endif

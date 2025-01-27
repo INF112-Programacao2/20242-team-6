@@ -36,7 +36,7 @@ void Menu::exibirMenuGerente(Funcionario* gerente, BancoFuncionario& banco, Esto
 
             } catch (const std::exception& e) {
                 std::cerr << "Erro: " << e.what() << "\n";
-                std::this_thread::sleep_for(std::chrono::seconds(1)); // Espera antes de repetir
+                std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // Espera antes de repetir
             }
         }
 
@@ -106,7 +106,13 @@ void Menu::exibirMenuCaixa(Funcionario* caixa, Estoque& estoque) {
 
             } catch (const std::exception& e) {
                 std::cerr << "Erro: " << e.what() << "\n";
-                std::this_thread::sleep_for(std::chrono::seconds(1)); // Espera antes de mostrar o menu novamente
+                // Ativa acessibilidade para PCD em caso de erro
+                if (caixa->getCargo() == "caixapcd") {
+                    CaixaPcd* caixa_pcd = dynamic_cast<CaixaPcd*>(caixa);
+                    std::string nomeArquivo = "features/accessibility/msg_erro01.txt";
+                    caixa_pcd->falarTexto(nomeArquivo); // chama TTS
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // Espera antes de mostrar o menu novamente
             }
         }
 
@@ -114,30 +120,26 @@ void Menu::exibirMenuCaixa(Funcionario* caixa, Estoque& estoque) {
         try {
             switch (escolha) {
                 case 1:
-                    std::cout << "Iniciando venda...\n";
                     Venda novaVenda;
                     novaVenda.iniciarVenda(caixa, estoque);
                     break;
                 case 2:
-                    std::cout << "Exibindo relatório de vendas...\n";
                     caixa->exibirRelatorio();
                     break;
                 case 0:
-                    std::cout << "Saindo...\n";
                     break;
                 default:
-                    // Ativa acessibilidade para PCD em caso de erro
-                    if (caixa->getCargo() == "caixapcd") {
-                        CaixaPcd* caixa_pcd = dynamic_cast<CaixaPcd*>(caixa);
-                        std::string nomeArquivo = "features/accessibility/msg_erro01.txt";
-                        caixa_pcd->falarTexto(nomeArquivo); // chama TTS
-                    }
-                    std::cout << "Opção inválida, tente novamente.\n";
-                    std::this_thread::sleep_for(std::chrono::seconds(1));
+                    throw std::invalid_argument("Opção inválida, tente novamente.");
             }
         } catch (const std::exception& e) {
-            std::cerr << "Erro: " << e.what() << "\n";
-            std::this_thread::sleep_for(std::chrono::seconds(1)); // Pausa para exibir a mensagem de erro
+            std::cout << "Erro: " << e.what() << "\n";  // usa buffer
+            // Ativa acessibilidade para PCD em caso de erro
+            if (caixa->getCargo() == "caixapcd") {
+                CaixaPcd* caixa_pcd = dynamic_cast<CaixaPcd*>(caixa);
+                std::string nomeArquivo = "features/accessibility/msg_erro01.txt";
+                caixa_pcd->falarTexto(nomeArquivo); // chama TTS
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // Pausa para exibir a mensagem de erro
         }
 
     } while (escolha != 0);

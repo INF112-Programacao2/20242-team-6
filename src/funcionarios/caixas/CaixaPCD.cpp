@@ -29,13 +29,14 @@ void CaixaPcd::gerarRelatorio() const{
         arquivo << "==========================================================================\n";
         arquivo << "Nome: " << getNome() << ".\n";
         arquivo << "CPF: " << getCpf() << ".\n";
-        arquivo << "Cargo: " << getCargo() << ".\n";
-        arquivo << "--------------------------------------------------------------------------\n";
+        arquivo << "Cargo: Caixa.\n";
+        arquivo << "--------------------------------------------------------------------------\n\n";
         
     }
 
     // Adiciona os dados de vendas
     for (const auto& venda : vendas) {
+         arquivo << "==========================================================================\n";
         arquivo << "Cliente: " << venda.cliente << ".\n";
         arquivo << "Data: " << venda.dataHora << ".\n";
         arquivo << "--------------------------------------------------------------------------\n";
