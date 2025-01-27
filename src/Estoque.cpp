@@ -26,9 +26,9 @@ void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque) {
         std::cout << "=============================================\n";
         std::cout << "          GERENCIAMENTO DE ESTOQUE           \n";
         std::cout << "=============================================\n";
-        std::cout << " 1. Adicionar novo lote de um produto        \n";
-        std::cout << " 2. Remover lote                             \n";
-        std::cout << " 0. Sair                                     \n";
+        std::cout << "1. Adicionar novo lote de um produto        \n";
+        std::cout << "2. Remover lote                             \n";
+        std::cout << "0. Sair                                     \n";
         std::cout << "=============================================\n";
         std::cout << "Escolha uma opção: ";
 
@@ -140,9 +140,9 @@ void Estoque::gerenciarEstoque(Funcionario* gerente, Estoque& estoque) {
 std::vector<std::pair<Lote*, int>> Estoque::buscarTodosLotesPorNome(const std::string& nomeProduto) {
     std::vector<std::pair<Lote*, int>> lotesDisponiveis;
 
-    for (auto& [codigo, lote] : estoque) {
-        if (lote->getNome() == nomeProduto && lote->getTamanho() > 0) {
-            lotesDisponiveis.emplace_back(lote.get(), lote->getTamanho());
+    for (auto& [codigo, lote] : estoque) {      // itera sobre todos os lotes no estoque
+        if (lote->getNome() == nomeProduto && lote->getTamanho() > 0) {    // verifica nome e se esta vazio
+            lotesDisponiveis.emplace_back(lote.get(), lote->getTamanho());  // adiciona ao par Lote*, tamanho
         }
     }
 
@@ -151,7 +151,7 @@ std::vector<std::pair<Lote*, int>> Estoque::buscarTodosLotesPorNome(const std::s
         return a.first->getValidade() < b.first->getValidade();
     });
 
-    return lotesDisponiveis;
+    return lotesDisponiveis;    // retorna um vetor com pares de lotes com mesmo nome e não vazios 
 }
 
 // adiciona um lote ao estoque (gerente tem permissão)

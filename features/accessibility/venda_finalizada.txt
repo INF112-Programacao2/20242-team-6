@@ -1,4 +1,4 @@
 Venda finalizada com sucesso!
-Cliente: fr
-Total da compra: R$14.00
+Cliente: Airton
+Total da compra: R$7.00
 Pressione Enter para continuar...

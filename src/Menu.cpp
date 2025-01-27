@@ -17,9 +17,9 @@ void Menu::exibirMenuGerente(Funcionario* gerente, BancoFuncionario& banco, Esto
                 std::cout << "\n==================================================\n";
                 std::cout << "                   MENU DO GERENTE              \n";
                 std::cout << "==================================================\n";
-                std::cout << "   1. Administrar Funcionários                  \n";
-                std::cout << "   2. Gerenciar Estoque                         \n";
-                std::cout << "   0. Sair                                      \n";
+                std::cout << "1. Administrar Funcionários                  \n";
+                std::cout << "2. Gerenciar Estoque                         \n";
+                std::cout << "0. Sair                                      \n";
                 std::cout << "==================================================\n";
                 std::cout << "Escolha uma opção: ";
                 std::cin >> escolha;

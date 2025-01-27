@@ -74,7 +74,7 @@ void Lote::removerProdutos(int quantidade){
         produtos.erase(produtos.begin(), produtos.begin() + quantidade); // deleta a quantidade de produtos a partir do primeiro elemento
         std::cout << "Removendo " << quantidade << " produtos do lote. Produtos disponiveis: " << produtos.size() << std::endl;
     } else {
-        throw std::invalid_argument("Nao e possivel remover esta quantidade de produtos do lote.");
+        throw std::invalid_argument("Nao é possivel remover esta quantidade de produtos do lote.");
     }
 }
 

@@ -53,12 +53,13 @@ void Caixa::gerarRelatorio() const {
         arquivo << "Nome: " << getNome() << std::endl;
         arquivo << "CPF: " << getCpf() << std::endl;
         arquivo << "Cargo: " << getCargo() << std::endl;
-        arquivo << "--------------------------------------------------------------------------\n";
+        arquivo << "--------------------------------------------------------------------------\n\n";
         
     }
 
     // Adiciona os dados de vendas
     for (const auto& venda : vendas) {
+        arquivo << "==========================================================================\n";
         arquivo << "Cliente: " << venda.cliente << "\n";
         arquivo << "Data: " << venda.dataHora << "\n";
         arquivo << "--------------------------------------------------------------------------\n";

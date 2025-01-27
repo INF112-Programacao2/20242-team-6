@@ -4,18 +4,15 @@
 #include "Lote.h"
 #include "Funcionario.h"
 #include <memory>
-#include <unordered_map>
+#include <map>
 
 class Estoque{
 private:
-    std::unordered_map<std::string, std::unique_ptr<Lote>> estoque;
+    std::map<std::string, std::unique_ptr<Lote>> estoque;
 public:
 
     // construtor
     Estoque();
-
-    //destrutor
-    
 
     // gerencia o estoque (gerente tem permissão)
     void gerenciarEstoque(Funcionario* gerente, Estoque& estoque);
