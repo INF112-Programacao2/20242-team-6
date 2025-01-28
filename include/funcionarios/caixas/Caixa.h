@@ -36,13 +36,13 @@ public:
     double valorTotal, const std::string& dataHora); 
 
     // método para gerar relatório de vendas do caixa
-    virtual void gerarRelatorio() const override;
+    virtual void gerarRelatorio() const;
 
     // Método que retorna o cargo
     virtual std::string getCargo() const override;
 
     // método para exibir o relatoório na tela
-    virtual void exibirRelatorio() const override;
+    virtual void exibirRelatorio() const;
 };
 
 #endif

@@ -1,4 +1,8 @@
+caixa,caixa teste,C-02,132.344.654-89,as,123,43.20
 gerente,nicolas,G-02,123.454.098-89,nicolas@gmail.com,1234
+gerente,nicolas,G-09,123.435.456-78,nicolas2@gmail.com,1234
 gerente,teste,G-3,123,q,1
 caixapcd,df,P-01,13213,ca,xa,0.00
-caixa,caixa teste,C-02,132.344.654-89,as,123,23.00
+caixa,sdxa,dsax,123.456.123-43,dews,fersd,0.00
+caixa,deswa,edsawc,o12345678902sxc,dxaws,dwsxa,0.00
+gerente,dewaq,jh,12345678901,fecdswfe,efdswc

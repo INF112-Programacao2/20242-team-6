@@ -1,6 +1,7 @@
 #include "Venda.h"
 #include "CaixaPCD.h"
 #include "NotaFiscal.h"
+#include "BancoFuncionario.h"
 #include "Tela.h"
 #include <iostream>
 #include <vector>
@@ -8,6 +9,7 @@
 #include <iomanip>
 #include <map>
 #include <chrono>
+#include <thread>
 
 using namespace std::chrono;
 
@@ -40,11 +42,9 @@ void Venda::iniciarVenda(Funcionario* caixa, Estoque& estoque){
     std::cout << "CPF do cliente: ";
     std::cin >> cpf_cliente;
 
-    /*criar lógica aqui para validar cpf:
-    1) pega só os 11 primeiros números (123.567.890-90) -> (12356789090)
-    2) tranforma no formato cpf (XXX.XXX.XXX-XX)
-    0bs: garantir que tenha exatos 11 numeros */
-    
+    // Filtra e formata o CPF
+    cpf_cliente = filtrarCpf(cpf_cliente);
+
     std::cin.ignore(); // Limpa buffer após receber cpf
 
     // cria cliente
@@ -87,6 +87,10 @@ void Venda::finalizarVenda(Cliente& cliente, Funcionario* caixa, Estoque& estoqu
 
             // Registra a venda pelo caixa
             novo_caixa->registrarVenda(cliente.getNome(), carrinho.getResumoCarrinho(), carrinho.getValorTotal(), dataHoraStr);
+
+            // salva as informações do funcionário no arquivo
+            BancoFuncionario banco;
+            banco.salvarFuncionariosNoArquivo("data/funcionarios.txt");
         }
 
         Tela::limpar(); // limpa tela
@@ -129,4 +133,26 @@ void Venda::finalizarVenda(Cliente& cliente, Funcionario* caixa, Estoque& estoqu
     } else {
         std::cerr << "Funcionário fornecido não é um Caixa.\n";
     }
+}
+
+// Função para validar e formatar o CPF no formato xxx.xxx.xxx-xx
+std::string Venda::filtrarCpf(const std::string& cpf) {
+    // Remove quaisquer caracteres que não sejam dígitos
+    std::string apenasNumeros;
+    for (char c : cpf) {
+        if (std::isdigit(c)) {
+            apenasNumeros += c;
+        }
+    }
+
+    // Verifica se a quantidade de números é válida (11 dígitos)
+    if (apenasNumeros.size() != 11) {
+        throw std::invalid_argument("CPF inválido. Deve conter exatamente 11 dígitos.");
+    }
+
+    // Formata o CPF no formato xxx.xxx.xxx-xx
+    return apenasNumeros.substr(0, 3) + "." + 
+           apenasNumeros.substr(3, 3) + "." + 
+           apenasNumeros.substr(6, 3) + "-" + 
+           apenasNumeros.substr(9, 2);
 }

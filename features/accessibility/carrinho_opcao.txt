@@ -1,4 +1,4 @@
-MENU CARRINHO.             
+CARRINHO.             
 Para Adicionar Produto. insira 1.                     
 Para Remover Produto. insira 2.                        
 Para Finalizar Compra. insira 3.             

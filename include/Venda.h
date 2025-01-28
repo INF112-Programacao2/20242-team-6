@@ -7,6 +7,9 @@
 #include "Carrinho.h"
 
 class Venda{
+private:
+    // Função para validar e formatar o CPF no formato xxx.xxx.xxx-xx
+    std::string filtrarCpf(const std::string& cpf);
 public:
     // método para iniciar a venda 
     void iniciarVenda(Funcionario* caixa, Estoque& estoque);

@@ -4,141 +4,217 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <regex>
 #include <thread>
 
-// construtor inicializa o banco de dados com alguns funcionários
-BancoFuncionario::BancoFuncionario() {
-    try {
-        carregarFuncionariosDoArquivo("data/funcionarios.txt");
-    } catch (const std::exception& e) {
-        std::cout << "Erro ao carregar funcionarios: " << e.what() << "\n";
-        std::cout << "Iniciando com banco de dados vazio.\n";
-        std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // aguarda exibição de msg erro
-    }
-}
+// construtor
+BancoFuncionario::BancoFuncionario() {}
+
+// Definição do membro estático
+std::map<std::string, std::unique_ptr<Funcionario>> BancoFuncionario::funcionarios;
 
 // gerencia funcionarios
 void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFuncionario& banco) {
     int escolha;
     do {
-
-        Tela::limpar(); // limpa tela
-
-        std::cout << "=============================================\n";
-        std::cout << "          GERENCIAMENTO DE FUNCIONARIOS      \n";
-        std::cout << "=============================================\n";
-        std::cout << " 1. Adicionar Funcionário                  \n";
-        std::cout << " 2. Remover Funcionário                    \n";
-        std::cout << " 3. Exibir Informação de um Funcionário    \n";
-        std::cout << " 4. Top Caixas com Mais Vendas             \n";
-        std::cout << " 0. Sair                                   \n";
-        std::cout << "=============================================\n";
-        std::cout << "Escolha uma opção: ";
-        std::cin >> escolha;
-
-        if (escolha == 1) {
-            // Adicionar novo funcionário
-            std::string nome, id, cpf, email, senha, cargo;
-
+        try {
             Tela::limpar(); // limpa tela
 
-            // subtítulo
-            std::cout << "ADICIONAR FUNCIONÁRIO\n";
+            std::cout << "=============================================\n";
+            std::cout << "          GERENCIAMENTO DE FUNCIONÁRIOS      \n";
+            std::cout << "=============================================\n";
+            std::cout << "1. Adicionar Funcionário                  \n";
+            std::cout << "2. Remover Funcionário                    \n";
+            std::cout << "3. Exibir Informação de um Funcionário    \n";
+            std::cout << "4. Top Caixas com Mais Vendas             \n";
+            std::cout << "0. Sair                                   \n";
+            std::cout << "=============================================\n";
+            std::cout << "Escolha uma opção: ";
+            std::cin >> escolha;
 
-            std::cout << "Cargo (Gerente, Caixa, CaixaPCD): ";
-            std::cin >> cargo;
+            if (std::cin.fail()) {
+                std::cin.clear(); // limpa a flag de erro
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // descarta entrada inválida
+                throw std::invalid_argument("Entrada inválida. Por favor, digite um número.");
+            }
 
-            /*validar cargo:
-            1) transforma a entrada em letras minuscalas e
-            2) testa se é ou gerente ou caixa ou caixapcd */
+            switch (escolha) {
+                case 1: {
+                    Tela::limpar(); // limpa tela
+                    std::cout << "=============================================\n";
+                    std::cout << "          CADASTRO DE FUNCIONÁRIOS      \n";
+                    std::cout << "=============================================\n";
 
-            std::cout << "Nome: ";
-            std::cin.ignore(); // Limpa buffer
-            std::getline(std::cin, nome);
+                    std::string nome, id, cpf, email, senha, cargo;
+                    std::cout << "Cargo (Gerente, Caixa, CaixaPCD): ";
+                    std::cin >> cargo; 
+                    cargo = toLowerCase(cargo); //Converte o cargo para minúsculas
 
-            /*limite o nome para no maximo 50 caracteres*/
+                    // Verifica se o cargo esta correto
+                    if (!(cargo == "gerente" || cargo == "caixa" || cargo == "caixapcd")) {
+                        throw std::invalid_argument("Cargo inválido.");
+                    }
 
-            std::cout << "ID: ";
-            std::cin >> id;
+                    std::cout << "Nome: ";
+                    std::cin.ignore(); // limpa buffer
+                    std::getline(std::cin, nome);
+                    
+                    // Verifica se o nome excede 50 caracteres
+                    if (nome.length() > 50) {
+                        throw std::invalid_argument("Nome muito longo! O nome deve ter no máximo 50 caracteres.");
+                    }
 
-            /*criar lógica aqui para validar id:
-            Inicia com uma letra maiscula que indica o cargo:
-            G - gerente
-            C - caixa
-            P - caixa pcd
-            validar se o cargo esta correto
-            e segue com - e um numero
-            exemplo: G-01
-            obs: a função adicionarFuncionario() já valida se o id for repetido
-            */
+                    
+                    std::cout << "ID: ";
+                    std::cin >> id;
 
-            std::cout << "CPF: ";
-            std::cin >> cpf;
+                    // Verifica se o ID está correto de acordo com o cargo
+                    if (cargo == "gerente" && id[0] != 'G') {
+                        throw std::invalid_argument("ID de Gerente deve começar com 'G'.");
+                    } else if (cargo == "caixa" && id[0] != 'C') {
+                        throw std::invalid_argument("ID de Caixa deve começar com 'C'.");
+                    } else if (cargo == "caixapcd" && id[0] != 'P') {
+                        throw std::invalid_argument("ID de Caixa PCD deve começar com 'P'.");
+                    }
 
-            /*criar lógica aqui para validar cpf:
-            1) pega só os 11 primeiros números (123.567.890-90) -> (12356789090)
-            2) tranforma no formato cpf (XXX.XXX.XXX-XX)
-            0bs: garantir que tenha exatos 11 numeros */
+                    // Verifica se o ID tem o formato correto (exemplo: G-01, C-05, P-10)
+                    std::regex formato("^[GCP]-\\d{2}$");
+                    if (!std::regex_match(id, formato)) {
+                        throw std::invalid_argument("ID inválido. O ID deve ser no formato G-XX, C-XX ou P-XX, com X sendo números.");
+                    }
 
-            std::cout << "Email: ";
-            std::cin >> email;
+                    std::cout << "CPF: ";
+                    std::cin >> cpf;
+                    cpf = filtrarCpf(cpf);
 
-            /*criar lógica aqui para validar email:
-            deve ter o formato XXX@YYY.ZZZ */
+                    std::cout << "Email: ";
+                    std::cin >> email;
 
-            std::cout << "Senha: ";
-            std::cin >> senha;
+                    // Define a expressão para validar o email no formato XXX@YYY.ZZZ
+                    std::regex padraoEmail("^[a-zA-Z0-9._%+-]+@[a-zA-Z]+\\.[a-zA-Z]{2,}$");
+                    
+                    // Validar se o email corresponde ao padrão
+                    if (!std::regex_match(email, padraoEmail)) {
+                        throw std::invalid_argument("Email inválido. Formato esperado: XXX@YYY.ZZZ");
+                    }
 
-            
+                    std::cout << "Senha: ";
+                    std::cin >> senha;
 
-            try {
-                if (cargo == "gerente") {
-                    banco.adicionarFuncionario(gerente, std::make_unique<Gerente>(nome, id, cpf, email, senha));
-                } else if (cargo == "caixa") {
-                    banco.adicionarFuncionario(gerente, std::make_unique<Caixa>(nome, id, cpf, email, senha, 0.0));
-                } else if (cargo == "caixapcd") {
-                    banco.adicionarFuncionario(gerente, std::make_unique<CaixaPcd>(nome, id, cpf, email, senha, 0.0));
-                } else {
-                    std::cerr << "Cargo inválido.\n";
+                    if (cargo == "gerente") {
+                        banco.adicionarFuncionario(gerente, std::make_unique<Gerente>(nome, id, cpf, email, senha));
+                    } else if (cargo == "caixa") {
+                        banco.adicionarFuncionario(gerente, std::make_unique<Caixa>(nome, id, cpf, email, senha, 0.0));
+                    } else if (cargo == "caixapcd") {
+                        banco.adicionarFuncionario(gerente, std::make_unique<CaixaPcd>(nome, id, cpf, email, senha, 0.0));
+                    }
+
+                    salvarFuncionariosNoArquivo("data/funcionarios.txt");
+                    break;
                 }
-                salvarFuncionariosNoArquivo("data/funcionarios.txt");    // salva o lote no arquivo texto  
+                case 2: {
+                    Tela::limpar(); // limpa tela
+                    std::cout << "=============================================\n";
+                    std::cout << "             REMOVER FUNCIONÁRIO            \n";
+                    std::cout << "=============================================\n";
 
-            } catch (const std::exception& e) {
-                std::cout << "Erro: " << e.what() << "\n";
-                std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // aguarda exibição de msg de erro
+                    std::string id;
+                    std::cout << "ID do funcionário a ser removido: ";
+                    std::cin >> id;
+
+                    banco.removerFuncionario(gerente, id);
+                    salvarFuncionariosNoArquivo("data/funcionarios.txt");
+                    break;
+                }
+                case 3: {   // exibe detalhes dos funcionários
+
+                Tela::limpar(); // limpa tela
+                std::cout << "=============================================\n";
+                std::cout << "             REMOVER FUNCIONÁRIO            \n";
+                std::cout << "=============================================\n";
+                
+                std::string nome_funcionario;
+                std::cout << "Digite o nome do funcionário: ";
+                std::cin.ignore(); // Limpa o buffer
+                std::getline(std::cin, nome_funcionario);
+
+                Funcionario* funcionario = buscarFuncionarioPorNome(nome_funcionario);
+                if (funcionario == nullptr) {
+                    throw std::invalid_argument("Nenhum funcionário encontrado com o nome informado.");
+                } else if(temChara(nome_funcionario)){
+                    std::string id_funcionario;
+                    std::cout << "Mais de um funcionário com mesmo nome.\nDigite o id do funcionário: ";
+                    std::getline(std::cin, id_funcionario);
+
+                    funcionario = buscarFuncionarioPorId(id_funcionario);
+
+                    std::cout << id_funcionario << "\n";
+                    
+                    if (funcionario == nullptr) {
+                        throw std::invalid_argument("Nenhum funcionário encontrado com o id informado.");
+                    }
+                }
+                
+                std::cout << "----------------------------------------\n";
+                std::cout << "Nome: " << funcionario->getNome() << "\n"
+                << "ID: " << funcionario->getId() << "\n"
+                << "CPF: " << funcionario->getCpf() << "\n"
+                << "Email: " << funcionario->getEmail() << "\n"
+                << "Cargo: " << funcionario->getCargo() << "\n";
+                if (funcionario->getCargo() == "caixa" || funcionario->getCargo() == "caixaPCD"){
+                    const Caixa* caixa = dynamic_cast<const Caixa*>(funcionario);
+                    if (caixa){
+                        std::cout<<"Total vendido: R$ " << std::fixed << std::setprecision(2) << caixa->getTotalVendido() << "\n";
+                    }
+                }
+                std::cout << "----------------------------------------\n";
+                    
+
+                std::cout << "Pressione enter para voltar...";
+                std::cin.ignore(); // Aguarda a interação do usuário
+                break;
+                }
+                case 4: {
+                    //ranking de caixas com mais vendas em dinheiro.
+                    std::vector<const Caixa*> caixas;
+                    for (const auto& [id, funcionario] : funcionarios) {
+                        if (funcionario->getCargo() == "caixa" || funcionario->getCargo() == "caixapcd") {
+                            const Caixa* caixa = dynamic_cast<const Caixa*>(funcionario.get());
+                            if (caixa) {
+                                caixas.push_back(caixa);
+                            }
+                        }
+                    }
+
+                    // Ordena os caixas com base no total vendido (ordem decrescente)
+                    std::sort(caixas.begin(), caixas.end(), [](const Caixa* a, const Caixa* b) {
+                        return a->getTotalVendido() > b->getTotalVendido();
+                    });
+
+                    // Exibe o ranking
+                    for (const auto* caixa : caixas) {
+                        std::cout << caixa->getNome() << " - R$ " << caixa->getTotalVendido() << "\n";
+                    }
+                    std::cout << "Pressione enter para voltar...";
+                    std::cin.ignore(); // Aguarda a interação do usuário
+                    std::cin.get(); // Espera o pressionamento de uma tecla
+
+                    break;
+                }
+                case 0:
+                    return;
+
+                default:
+                    throw std::invalid_argument("Opção inválida. Escolha um número entre 0 e 4.");
             }
 
-        } else if (escolha == 2) {
-            // Remover funcionário
-
-            Tela::limpar(); // limpa tela
-
-            // subtítulo
-            std::cout << "REMOVER FUNCIONÁRIO\n";
-
-            std::string id;
-            std::cout << "ID do funcionário a ser removido: ";
-            std::cin >> id;
-
-            try {
-                banco.removerFuncionario(gerente, id);  // remove funcionário do banco
-                salvarFuncionariosNoArquivo("data/funcionarios.txt");    // salva o lote no arquivo texto 
-            } catch (const std::exception& e) {
-                std::cout << "Erro: " << e.what() << "\n";
-                std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // aguarda exibição de msg de erro
-            }
-        } else if(escolha == 3){
-            // mostrar detalhes de um funcionario
-            // pedir nome e buscar no banco de dados
-            // implementar uma função membro buscarFuncionarioPorNome() (parecido com buscarFuncionarioPorEmail())
-            // e exibir os detalhes dos funcionarios
-        }  else if(escolha == 4){
-            // implementar um ranking de caixas com mais vendas em dinheiro.
+        } catch (const std::exception& e) {
+            std::cerr << "Erro: " << e.what() << "\n";
+            std::this_thread::sleep_for(std::chrono::seconds(2));
         }
-
-
-    } while (escolha != 0);
+    } while (true);
 }
+
 
 // Adiciona um funcionário ao banco de dados
 void BancoFuncionario::adicionarFuncionario(Funcionario* gerente, std::unique_ptr<Funcionario> novoFuncionario) {
@@ -172,14 +248,52 @@ void BancoFuncionario::removerFuncionario(Funcionario* gerente, const std::strin
     std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // aguarda exibição de msg
 }
 
-// Retorna um ponteiro para o funcionário, se encontrado
+// Retorna um ponteiro para o funcionário, se encontrado usando email
 Funcionario* BancoFuncionario::buscarFuncionarioPorEmail(const std::string& email) const {
     for (const auto& [id, funcionario] : funcionarios) {
         if (funcionario->getEmail() == email) {
             return funcionario.get();
         }
     }
-    return nullptr; // Não encontrado
+    return nullptr;
+}
+
+// Retorna um ponteiro para o funcionário, se encontrado usando nome
+Funcionario* BancoFuncionario::buscarFuncionarioPorNome(const std::string& nome) const {
+    for (const auto& [id, funcionario] : funcionarios) {
+        if (funcionario->getNome() == nome) {
+            return funcionario.get();
+        }
+    }
+    return nullptr; 
+}
+
+// Retorna um ponteiro para o funcionário, se encontrado usando id
+Funcionario* BancoFuncionario::buscarFuncionarioPorId(const std::string& id_funcionario) const {
+    for (const auto& [id, funcionario] : funcionarios) {
+        if (funcionario->getId() == id_funcionario) {
+            return funcionario.get();
+        }
+    }
+    return nullptr; 
+}
+
+// verifica se mais de um funcionário tem o mesmo nome
+bool BancoFuncionario::temChara(const std::string& nome){
+    int contagem = 0;
+    for (const auto& funcionario : funcionarios) {
+        if (funcionario.second->getNome() == nome) {
+            contagem++;
+        }
+    }
+
+    if(contagem > 1){
+        return true;
+    } else if(contagem == 1){
+        return false;
+    }else{
+        throw std::runtime_error("Funcionário não esta cadastrado.");
+    }
 }
 
 // realiza o login do funcionario
@@ -270,4 +384,35 @@ void BancoFuncionario::carregarFuncionariosDoArquivo(const std::string& nomeArqu
 
     // fecha arquivo
     arquivo.close();
+}
+
+// Função para validar e formatar o CPF no formato xxx.xxx.xxx-xx
+std::string BancoFuncionario::filtrarCpf(const std::string& cpf) {
+    // Remove quaisquer caracteres que não sejam dígitos
+    std::string apenasNumeros;
+    for (char c : cpf) {
+        if (std::isdigit(c)) {
+            apenasNumeros += c;
+        }
+    }
+
+    // Verifica se a quantidade de números é válida (11 dígitos)
+    if (apenasNumeros.size() != 11) {
+        throw std::invalid_argument("CPF inválido. Deve conter exatamente 11 dígitos.");
+    }
+
+    // Formata o CPF no formato xxx.xxx.xxx-xx
+    return apenasNumeros.substr(0, 3) + "." + 
+           apenasNumeros.substr(3, 3) + "." + 
+           apenasNumeros.substr(6, 3) + "-" + 
+           apenasNumeros.substr(9, 2);
+}
+
+// Função que converte uma string para minúsculas
+std::string BancoFuncionario::toLowerCase(const std::string& palavra) {
+    std::string result = palavra;
+    for (size_t i = 0; i < result.length(); i++) {
+        result[i] = std::tolower(result[i]);
+    }
+    return result;
 }

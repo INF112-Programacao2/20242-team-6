@@ -47,12 +47,10 @@ void Menu::exibirMenuGerente(Funcionario* gerente, BancoFuncionario& banco, Esto
                 banco.gerenciarFuncionarios(gerente, banco);
                 break;
             case 2:
-                std::cout << "Entrando no módulo de estoque...\n";
                 // Entra na opção de gerenciar estoque
                 estoque.gerenciarEstoque(gerente, estoque);
                 break;
             case 0:
-                std::cout << "Saindo...\n";
                 break;
             default:
                 std::cout << "Opção inválida, tente novamente.\n";
@@ -120,16 +118,17 @@ void Menu::exibirMenuCaixa(Funcionario* caixa, Estoque& estoque) {
         // Processa a escolha após validação
         try {
             switch (escolha) {
-                case 1: // inicia venda
+                case 1:{ // inicia venda
                     Venda novaVenda;
                     novaVenda.iniciarVenda(caixa, estoque);
                     break;
-
-                case 2: // exibe o relatório do funcionaário
-                    caixa->exibirRelatorio();
+                }
+                case 2: {// exibe o relatório do funcionaário
+                    Caixa* novo_caixa = dynamic_cast<Caixa*>(caixa);
+                    novo_caixa->exibirRelatorio();
                     break;
-
-                case 3: // exibe estoque
+                }
+                case 3:{ // exibe estoque
                     estoque.exibirEstoque();
 
                     // Ativa acessibilidade para PCD
@@ -139,7 +138,7 @@ void Menu::exibirMenuCaixa(Funcionario* caixa, Estoque& estoque) {
                         caixa_pcd->falarTexto(nomeArquivo); // chama TTS
                     }
                     break;
-
+                }
                 case 0: // sair
                 break;
                 

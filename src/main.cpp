@@ -14,6 +14,14 @@ int main() {
     BancoFuncionario banco;
     Estoque estoque;
 
+    try {
+        banco.carregarFuncionariosDoArquivo("data/funcionarios.txt");     // carrega o banco de funcionário
+    } catch (const std::exception& e) {
+        std::cout << "Erro ao carregar funcionarios: " << e.what() << "\n";
+        std::cout << "Iniciando com banco de dados vazio.\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // aguarda exibição de msg erro
+    }
+
     std::string email, senha;
     int escolha = -1; // inicia o número sentinela 
 
