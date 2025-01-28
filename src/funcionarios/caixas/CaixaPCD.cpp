@@ -2,6 +2,8 @@
 #include <iomanip>
 #include <fstream>
 #include <iostream>
+#include <thread>
+#include <atomic>
 
 // construtor
 CaixaPcd::CaixaPcd(const std::string& nome, const std::string& id, const std::string& cpf,
@@ -107,7 +109,7 @@ void CaixaPcd::exibirRelatorio() const{
     
 }
 
-void CaixaPcd::falarTexto(std::string& caminhoArquivo) const{
+void CaixaPcd::falarTexto(std::string& caminhoArquivo) const {
     // Abre o arquivo de texto
     std::ifstream arquivo(caminhoArquivo);
     if (!arquivo) {
@@ -122,9 +124,27 @@ void CaixaPcd::falarTexto(std::string& caminhoArquivo) const{
     }
     arquivo.close();
 
-    // Comando para o RHVoice
-    std::string comando = "echo \"" + textoCompleto + "\" | rhvoice.test";
-    std::system(comando.c_str());
-}
+    // Variável para sinalizar interrupção
+    std::atomic<bool> interromper(false);
 
+    // Thread para executar o comando RHVoice
+    std::thread rhvoiceThread([&]() {
+        std::string comando = "echo \"" + textoCompleto + "\" | rhvoice.test";
+        while (!interromper) {
+            std::system(comando.c_str());
+        }
+    });
+
+    // Aguarda o usuário pressionar Enter
+    std::cout << "Pressione Enter para interromper...\n";
+    std::cin.get();
+
+    // Sinaliza a interrupção
+    interromper = true;
+
+    // Aguarda a thread finalizar
+    if (rhvoiceThread.joinable()) {
+        rhvoiceThread.join();
+    }
+}
 

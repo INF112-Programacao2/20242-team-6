@@ -62,6 +62,12 @@ void Carrinho::gerenciarCarrinho(Estoque& estoque) {
                 // Limpa o estado de erro e descarta entradas inválidas
                 std::cin.clear(); 
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                // Ativa acessibilidade para PCD em caso de erro
+                if (caixa->getCargo() == "caixapcd") {
+                    CaixaPcd* caixa_pcd = dynamic_cast<CaixaPcd*>(caixa);
+                    std::string nomeArquivo = "features/accessibility/msg_erro01.txt";
+                    caixa_pcd->falarTexto(nomeArquivo); // chama TTS
+                }
                 std::this_thread::sleep_for(std::chrono::milliseconds(1500)); // Espera antes de mostrar o menu novamente
             }
         }

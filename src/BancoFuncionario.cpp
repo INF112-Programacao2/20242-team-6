@@ -175,7 +175,14 @@ void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFunciona
                 break;
                 }
                 case 4: {
-                    //ranking de caixas com mais vendas em dinheiro.
+                    //ranking de caixas com mais vendas em dinheiro
+
+                    Tela::limpar(); // Limpa a tela
+                    std::cout << "====================================================\n";
+                    std::cout << "        TOP FUNCIONÁRIOS COM MAIS VENDAS       \n";
+                    std::cout << "====================================================\n";
+
+                    // Vetor para armazenar os caixas
                     std::vector<const Caixa*> caixas;
                     for (const auto& [id, funcionario] : funcionarios) {
                         if (funcionario->getCargo() == "caixa" || funcionario->getCargo() == "caixapcd") {
@@ -191,14 +198,24 @@ void BancoFuncionario::gerenciarFuncionarios(Funcionario* gerente, BancoFunciona
                         return a->getTotalVendido() > b->getTotalVendido();
                     });
 
-                    // Exibe o ranking
+                    // Exibe o ranking formatado
+                    int rank = 1;
+                    std::cout << std::left << std::setw(5) << "Pos" 
+                            << std::setw(30) << " Nome" 
+                            << std::right << std::setw(10) << "    Total Vendido\n";
+                    std::cout << "----------------------------------------------------\n";
+
                     for (const auto* caixa : caixas) {
-                        std::cout << caixa->getNome() << " - R$ " << caixa->getTotalVendido() << "\n";
+                        std::cout << std::left << std::setw(5) << rank++ << " | " 
+                                << std::setw(30) << caixa->getNome() 
+                                << " | R$ " << std::fixed << std::setprecision(2) << caixa->getTotalVendido() 
+                                << "\n";
+                        std::cout << "----------------------------------------------------\n";
                     }
+
                     std::cout << "Pressione enter para voltar...";
                     std::cin.ignore(); // Aguarda a interação do usuário
                     std::cin.get(); // Espera o pressionamento de uma tecla
-
                     break;
                 }
                 case 0:
