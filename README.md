@@ -70,7 +70,20 @@ O programa simula as operações diárias de um supermercado, incluindo:
      ```bash
      sudo reboot
      ```
-
+*obs: Algumas distros do linux não possuem o snap instalado por padrão*
+- Instale o snap com o comando:
+  ```bash
+  sudo apt install snapd
+     ```
+- Caso não consiga instalar o snap dessa forma será nescessário remover um arquivo que impede sua instalação *nosnap.pref*:
+  ```bash
+  sudo rm /etc/apt/preferences.d/nosnap.pref
+     ```
+- Ou mover o arquivo para outra pasta:
+  ```bash
+  sudo mv /etc/apt/preferences.d/nosnap.pref ~/Documents/nosnap.backup
+     ```
+- Após remover o arquivo da pasta, basta instalar o snap com o primeiro comando.
 ---
 
 ## Como Compilar e Executar
@@ -100,5 +113,3 @@ O programa simula as operações diárias de um supermercado, incluindo:
 - **RHVoice**: Síntese de voz (TTS).
 
 ---
-
-
